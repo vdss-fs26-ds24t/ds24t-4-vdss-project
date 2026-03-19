@@ -1,72 +1,126 @@
 # Project Charta
 
 ## Context and Scope
-This project operates within the domain of Swiss politics and civic tech, focusing on the parliamentary debates of the Swiss Federal Assembly. The project addresses the semantic landscape of political speeches. The core question it seeks to answer is: *Are Swiss political parties truly polarized in their rhetoric, or do they use similar language and semantic structures when discussing key issues?* The expected benefit is to provide transparency and an intuitive, visual way for the public and media to understand the ideological proximity of political actors without having to read thousands of pages of official transcripts. The final visualization product will be published as an interactive online dashboard (e.g., Streamlit).
 
-## Project Objectives and Success Criteria
-**Project Objectives (Client/Stakeholder Perspective):**
+This project operates within the domain of Swiss politics and civic tech, focusing on the parliamentary debates of the Swiss Federal Assembly.
+The project addresses the semantic landscape of political speeches.
+The core question it seeks to answer is:
 
-* Enable users to visually explore the ideological and semantic similarities between Swiss politicians and parties based on their official speeches.
-* Provide an interactive tool to filter parliamentary speeches by Party, Canton, and Language.
-* Deliver an intuitive interface that translates complex AI-generated text embeddings into an easily readable format for non-technical users.
+> *Are Swiss political parties truly polarized in their rhetoric, or do they use similar language and semantic structures when discussing key issues?*
 
-**Success Criteria:**
+The expected benefit is to provide transparency and an intuitive, visual way for the public and media to understand the ideological proximity of political actors without having to read thousands of pages of official transcripts.
+The final visualization product will be published as an interactive web-based dashboard using Streamlit.
 
-* **Qualitative:** Users can successfully and quickly identify thematic clusters (e.g., whether members of the SP and the Greens cluster together semantically compared to the SVP).
-* **Quantitative:** The dataset must contain at least 100 observations (speeches) and 6 features (including UMAP coordinates, Word Count, Party, etc.). The dashboard must load and render the interactive scatter plot smoothly.
+## Project Objectives
 
-**Out of Scope:** Real-time live transcription analysis, audio processing of speeches, and predictive modeling (e.g., predicting how a politician will vote).
+* **Exploration**: Enable users to visually explore the ideological and semantic similarities between Swiss politicians and parties based on their official speeches.
+* **Intuition**: Deliver an intuitive interface that translates complex AI-generated text embeddings into an easily readable format for non-technical users.
+* **Interaction**: Provide interactive filters on Party, Canton and Language.
+
+
+* **Out of Scope**:
+  * Real-time live transcription analysis
+  * Audio processing of speeches
+  * Predictive modeling (e.g., predicting how a politician will vote)
+
+## Success Criteria
+
+* **Qualitative**:
+  * Users can successfully and quickly identify thematic clusters
+  * Different clusters can be clearly identified
+* **Quantitative**:
+  * Process at least 10'000 transcripts
 
 ## Stakeholder Analysis
-* **Project Team (3 Students):** Responsible for data engineering, AI processing, and visualization design. Goal: Successfully complete the module requirements.
-* **Course Instructors:** Evaluate the project based on reproducibility, technical implementation, and storytelling quality.
-* **Political Journalists:** Professional end-users looking for data-driven insights and quantitative proof of political polarization.
-* **Voters / Engaged Citizens:** General end-users seeking a transparent, big-picture overview of Swiss political dynamics.
+
+* **Development Team**: Responsible for data engineering, AI processing, and visualization design.
+* **Course Instructors**: Evaluate the project based on reproducibility, technical implementation, and storytelling quality.
+* **Political Journalists**: Professional end-users looking for data-driven insights and quantitative proof of political polarization.
+* **Voters / Engaged Citizens**: General end-users seeking a transparent, big-picture overview of Swiss political dynamics.
 
 ## User Analysis
+
 We have identified two primary personas based on the Value Proposition Canvas [@Osterwalder2014]:
 
-### Persona 1: The Political Journalist (e.g., Sarah, 35)
-* **Attributes:** High domain expertise in Swiss politics, medium data literacy, primarily uses a desktop computer, needs to use the tool weekly for research.
-* **User tasks (Jobs):** Writing data-driven articles on political polarization; finding specific quotes or identifying which politicians are driving a specific narrative.
-* **Pains:** Reading through thousands of pages of the *Amtliches Bulletin* (official transcripts) is incredibly time-consuming. It is difficult to prove "polarization" quantitatively rather than just anecdotally.
-* **Gains:** A tool that instantly highlights outliers (e.g., a politician speaking more like an opposing party) to formulate compelling journalistic narratives.
+### The Political Journalist - Sarah (31)
 
-### Persona 2: The Engaged Citizen (e.g., Marco, 42)
-* **Attributes:** Medium domain expertise, low data literacy, primarily uses mobile/tablet, occasional usage (usually around elections).
-* **User tasks (Jobs):** Deciding who to vote for; trying to understand if a party actually aligns with their personal values in daily parliamentary business.
-* **Pains:** Political rhetoric is dense, dry, and hard to follow. It is difficult to see the "big picture" of what a party actually focuses on.
-* **Gains:** A simple, visually appealing way to see which politicians and parties are ideologically similar at a single glance.
+* **Quick Facts**
+  * *Domain expertise*: High
+  * *Data literacy*: Moderate
+  * *Usage*: Weekly
+  * *Device*: Desktop / Laptop
+* **User tasks**
+  * Writing data-driven articles on political polarization.
+  * Finding specific quotes or identifying which politicians are driving a specific narrative.
+* **Pains**
+  * Reading through thousands of pages of the *Amtliches Bulletin* (official transcripts) is incredibly time-consuming.
+  * It is difficult to prove "polarization" quantitatively rather than just anecdotally.
+* **Gains** 
+  * A tool that instantly highlights outliers (e.g. a politician speaking more like an opposing party) to formulate compelling journalistic narratives.
+
+### The Engaged Citizen - Marco (57)
+
+* **Quick Facts**
+  * *Domain expertise*: Moderate
+  * *Data literacy*: Low
+  * *Usage*: Regular (around elections)
+  * *Device*: Mobile (tablet)
+* **User Tasks**
+  * Deciding who to vote for.
+  * Trying to understand if a party actually aligns with their personal values.
+* **Pains**
+  * Political rhetoric is dense, dry and hard to follow.
+  * It is difficult to see the "big picture" of what a party actually focuses on.
+* **Gains**
+  * A simple, visually appealing way to see which politicians and parties are ideologically similar at a single glance.
 
 ## Situation Assessment
-* **Resources:** Data will be sourced from the OpenParlData API via the `swissparlpy` Python library. We will utilize `sentence-transformers` for generating multilingual embeddings and `UMAP` for dimensionality reduction. Visualizations will be built using Python frameworks (e.g., Matplotlib/Seaborn/Plotly).
-* **Constraints & Time:** A draft charter is due March 20, 2026. The final product and documentation must be deployed via GitHub Pages by June 1, 2026.
-* **Risks:**
-  * High computational cost of generating AI embeddings locally (mitigated by processing data offline and saving it as a static CSV for the dashboard).
-  * Multilingual nuances (German, French, Italian) potentially skewing the semantic clustering (mitigated by using a robust multilingual transformer model).
+
+### Resources
+
+* **Personnel**
+  * 2 Data Science students
+  * 2 Coaches
+* **Software**
+  * ZHAW licensed software
+  * Open source / public domain software
+* **Time**
+  * 12 weeks
+
+### Constraints
+
+* Publicly available data only via [OpenParlData](https://openparldata.ch/home)
+* Swiss hosting service for dashboard
+
+### Risks
+
+* High computational cost of generating AI embeddings locally
+* Multilingual nuances (German, French, Italian) potentially skewing the semantic clustering
 
 ## Visualization Concept
-This concept translates the project objectives into a concrete visual format, directly addressing the user pains and gains identified above.
 
-* **Product form:** An interactive dashboard application.
-* **Visual encodings:**
-  * *Main Graphic:* A 2D Scatter plot. Each dot represents a single speech (mapped via UMAP X/Y coordinates). Color hue encodes the **Party** (Categorical).
-  * *Supporting Graphics:* Bar charts encoding average speech duration or average sentiment score by Party (Length/Height encoding).
-* **Interactivity:** Dropdown menus to filter the scatter plot by Party, Language, or Canton. Hover tooltips on the dots to reveal the Speaker's Name, Date, and a short snippet of the speech.
-* **Narrative and annotation:** A brief introductory text panel explaining how the AI reads the speeches and creates the "semantic map," guiding the user on how to interpret the spatial distances between dots.
-* **Target medium and integration:** Hosted online as a standalone web application (e.g., via Streamlit Community Cloud), accessible via a standard web browser.
+* **Product form**: An interactive web-based dashboard
+* **Visual encodings**:
+  * *Main Graphic*: A 2D Scatter plot. Each dot represents a single speech (mapped via UMAP X/Y coordinates). Color hue encodes the **Party** (Categorical).
+  * *Supporting Graphics*: Bar charts encoding average speech duration or average sentiment score by Party (Length/Height encoding).
+* **Interactivity**: 
+  * Dropdown menus to filter the scatter plot by Party, Language or Canton.
+  * Hover tooltips on the dots to reveal the Speaker's Name, Date, and a short snippet of the speech.
+* **Narrative and annotation**: A brief introductory text panel explaining how the AI reads the speeches and creates the "semantic map," guiding the user on how to interpret the spatial distances between dots.
+* **Target medium and integration**: Hosted online as a standalone web application, accessible via a standard web browser.
 
-**Intended Value Dimensions:**
-* **Cognitive and analytical value:** The scatter plot clustering instantly reveals hidden patterns of ideological similarity that are impossible to detect by reading raw text [@card1999; @vanwijk2005].
-* **Communicative value:** Color-coding by party immediately communicates whether parties act as a unified bloc or if their members' rhetoric is scattered.
-* **Experiential and aesthetic value:** Turning dry government transcripts into an interactive, explorable "map" of ideas provides a modern and engaging experience, fostering trust in the data through transparency.
+**Intended Value Dimensions**:
+
+* **Cognitive and analytical value**: The scatter plot clustering instantly reveals hidden patterns of ideological similarity that are impossible to detect by reading raw text.
+* **Communicative value**: Color-coding by party communicates whether parties act as a unified bloc or if their members' rhetoric is scattered.
+* **Experiential and aesthetic value**: Turning dry government transcripts into an interactive, explorable "map" of ideas provides a modern and engaging experience.
 
 ## Project Plan
 Below is the preliminary timetable for the visualization project:
 
 ```{mermaid}
 %%| label: fig-project-plan
-%%| fig-cap: Preliminary project plan in the form of a Gantt chart.
+%%| fig-cap: Preliminary project plan.
 gantt
     title Project Plan
     dateFormat YYYY-MM-DD
@@ -96,6 +150,10 @@ gantt
 ```
 
 ## Roles and Contact Details
-TBD
 
-List the people involved in the development work here with their role titles, tasks and contact details.
+| Person                    | Role                             | Task                                                         | Email                               |
+| ------------------------- | -------------------------------- | ------------------------------------------------------------ | ----------------------------------- |
+| Christian Bosshard        | Data Scientist                   | Developer                                                    | boschr02@students.zhaw.ch           |
+| Enea D. Fedel             | Data Scientist / Teamsprecher    | Developer                                                    | fedelene@students.zhaw.ch           |
+| Manuel Dömer              | Coach                            | Consulting for technical topics                              | doem@zhaw.ch                        |
+| Wibke Weber               | Coach                            | Consulting for (visual) communication topics                 | webw@zhaw.ch                        |
