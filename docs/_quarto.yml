@@ -7,7 +7,7 @@ language:
   section-title-appendices: "Appendix"
 
 website:
-  title: "Sample Project"
+  title: "VDSS Team 4"
   search: true
   sidebar:
     style: "floating"
@@ -19,6 +19,8 @@ website:
       - viz_design_report.qmd
       - evaluation.qmd
       - meeting_notes.qmd
+      - text: "Streamlit"
+        href: /streamlit/
 
 format:
   html:
