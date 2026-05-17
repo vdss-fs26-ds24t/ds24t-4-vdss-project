@@ -1,70 +1,112 @@
-# Visualization Design Report
-This report documents the visual encoding and design decisions made during the development of the visualization product. It translates the visualization concept outlined in the [Project Charta](project_charta.qmd) into concrete design specifications and documents the resulting prototype(s).
+---
+title: "Visualisierungsdesign"
+---
 
-## Design Overview
-Briefly summarise the visualization concept from the Project Charta and describe any refinements or changes that emerged during the design process. Reference the project objectives and user needs that drive the design.
+# Visualisierungsdesign
 
-## Data-to-Visual Mapping
-Document the mapping of data variables to visual channels. For each view or chart in the visualization product, describe:
+Dieser Bericht dokumentiert die visuellen Encoding- und Designentscheidungen, die im Lauf der Entwicklung des Visualisierungsprodukts getroffen wurden. Er übersetzt das Konzept aus der [Projekt Charta](project_charta.qmd) in konkrete Designspezifikationen und beschreibt den aktuellen Prototypen.
 
-* **Data variables**: Which variables from the processed datasets (see [Data Report](data_report.qmd)) are represented?
-* **Marks**: What geometric primitives are used to represent data items – points, lines, areas, volumes?
-* **Visual channels**: How are data attributes encoded – position, length, angle, area, colour hue, colour saturation, brightness, shape, orientation, texture?
-* **Scale and axis design**: What scales are used (linear, logarithmic, categorical, temporal)? How are axes labelled and annotated?
-* **Colour design**: What colour palette is used and why? Consider colour-blindness accessibility (e.g. using `viridis`, `ColorBrewer` palettes) and semantic colour mappings (e.g. red for negative, green for positive).
+## Designüberblick
 
-A tabular overview can help provide a quick summary:
+Das Visualisierungsprodukt beantwortet die Kernfrage „Werden Schweizer Bundespolitiker:innen wirklich immer älter?" in einem narrativen Bogen aus vier Seiten. Seite 1 (*Headline*) liefert die Antwort vorweg; Seite 2 (*Aufschlüsselung*) zerlegt den Trend nach Partei und Geschlecht; Seite 3 (*Mechanismus*) prüft, ob ein veränderter Median durch jüngere Einstiege oder längere Karrieren erklärt wird; Seite 4 (*Personen*) bringt die Extremfälle und die heutige Verteilung als konkrete Personen ins Bild. Diese Struktur folgt dem klassischen *overview first, details on demand* Pattern [@shneiderman1996].
 
-: Data-to-visual mapping overview. {#tbl-encoding-overview}
+Im Vergleich zum ursprünglichen Konzept in der Charta sind zwei Refinements entstanden. Erstens wurde aus zunächst sechs Seiten eine kompaktere Fassung mit vier Seiten; zwei Sektionen aus einer früheren Iteration (Parteikoalitionen, Parteidisziplin) entfielen mit dem Pivot von der Abstimmungsanalyse zur Altersanalyse. Zweitens haben wir die ursprünglich vorgesehenen Streudiagramme durch klarere Vergleichsformen ersetzt (Boxplots pro Jahrzente statt eines globalen Streudiagramms Eintrittsalter über Zeit), nachdem die ersten Renderings zeigten, dass ein Streudiagramm mit 5400 Mandatspunkten visuell unleserlich war.
 
-| View / Chart | Data variables | Mark type | Visual channels | Scale |
-|---|---|---|---|---|
-| e.g. Sales by Region | region (cat.), revenue (quant.) | bar | x-position, length, colour hue | categorical, linear |
-| ... | ... | ... | ... | ... |
+## Daten-zu-Visualisierungs-Mapping
 
-## Layout and Composition
-Describe how individual views are composed into the overall visualization product:
+| Seite | View | Datenvariablen | Mark | Visuelle Kanäle | Skala |
+|---|---|---|---|---|---|
+| Headline | KPI-Karten | aktuelle Werte aus `parliament_yearly` und `politicians` | Text | Schriftgrösse, Position | nicht skaliert |
+| Headline | Median-Alter NR und SR | year, chamber, median, q25, q75 (`parliament_yearly`) | Linie und gefüllte Fläche | x-Position (Jahr), y-Position (Alter), Farbton (Kammer), Transparenz für IQR-Band | linear, linear, kategorial |
+| Aufschlüsselung | Median-Alter pro Partei | year, party_harmonized_de, age (`parliament_yearly`) | Linie | x-Position, y-Position, Farbton (Partei) | linear, linear, kategorial |
+| Aufschlüsselung | Median-Alter nach Geschlecht | year, gender, age (`parliament_yearly`) | Linie | x-Position, y-Position, Farbton | linear, linear, kategorial |
+| Mechanismus | Eintrittsalter pro Eintrittsjahrzent | entry_decade, entry_age (`politicians`) | Box-and-Whisker | x-Position, Box-Geometrie für Quartile, Punkte für Ausreisser | ordinal, linear |
+| Mechanismus | Mandatsdauer-Verteilung | total_tenure_years (`politicians`) | Balken (Histogramm) | x-Position (Bucket), Höhe (Anzahl) | linear, linear |
+| Mechanismus | Mediane Mandatsdauer pro Jahrzente | entry_decade, median total_tenure (`politicians`) | Balken | x-Position, Höhe | ordinal, linear |
+| Personen | Top-10 Listen (jüngste, älteste, längste Karrieren) | name, party, entry_age oder total_tenure, year (`politicians`) | Text in Tabelle | Reihenfolge (Position) | ordinal |
+| Personen | Altersverteilung heute | age_today, party_de auf `currently_active == True` (`politicians`) | Gestapelte Balken (Histogramm) | x-Position (Altersklasse), Höhe (Anzahl), Farbton (Partei) | linear, linear, kategorial |
 
-* **Spatial arrangement**: How are views arranged on the screen or page? Grid layout, free-form, scrollable narrative, etc.
-* **Coordination between views**: Are views linked (e.g. brushing and linking, shared filters, coordinated highlighting)?
-* **Hierarchy and navigation**: How does the user navigate between different levels of detail or different thematic sections?
-* **Responsive design**: How does the layout adapt to different screen sizes and devices, if applicable?
+: Daten-zu-Visualisierungs-Mapping pro View. {#tbl-encoding-overview}
 
-Include annotated wireframes or layout sketches to illustrate the composition.
+**Skalen und Achsen.** Die y-Achse aller Alters-Diagramme ist bewusst auf den Bereich 35 bis 70 Jahre limitiert. Eine bei Null beginnende y-Achse würde den Trend optisch flach erscheinen lassen; bei Altersangaben gibt es keine sinnvolle Null. Die x-Achse der Zeitreihen ist linear in Jahren von 1850 bis 2025. Achsenbeschriftungen sind durchgängig auf Deutsch und ohne Abkürzungen.
 
-## Interaction Design
-If the visualization product includes interactive elements, document them here:
+**Farbgestaltung.** Die Hauptfarben sind Dunkelblau (#1f4e79) für den Nationalrat und Orange (#e07b3a) für den Ständerat. Für die Aufschlüsselung nach Partei kommt eine kategoriale Palette zum Einsatz, die sich an den traditionellen Parteifarben orientiert (z. B. SVP grün, SP rot, GLP hellgrün), ohne sie streng zu reproduzieren. Sequentielle Skalen (etwa für Heatmaps in früheren Iterationen) verwendeten Plotly-eigene Palette `RdYlGn`.
 
-* **Interaction techniques**: Selection, filtering, zooming, panning, brushing, details-on-demand, drill-down, etc.
-* **Input modalities**: Mouse, touch, keyboard shortcuts, search fields, etc.
-* **State management**: How does the system respond to user interactions? What state transitions occur?
-* **Feedback and transitions**: How are changes communicated to the user – animations, highlighting, progressive disclosure?
+## Layout und Komposition
 
-For each interaction, describe which user task (from the user analysis in the Project Charta) it supports and how it contributes to the cognitive, communicative or experiential value of the product.
+Das Produkt ist als mehrseitige Streamlit-Anwendung organisiert. Die Seitennavigation liegt fix in der linken Sidebar; der Hauptbereich rendert pro Seite genau einen narrativen Block. Die Reihenfolge der Seiten ist durchnummeriert (1 bis 4) und entspricht dem Lesefluss vom Headline-Befund über die Aufschlüsselung und den Mechanismus bis zu den Personen.
 
-## Visual Style and Aesthetics
-Document the overall visual design language:
+```
++--------------------------------------------------------------------+
+|  Werden Bundespolitiker:innen älter?                               |
++----------------+---------------------------------------------------+
+|                |  Seite 1: Headline                                |
+|  Navigation    |  ------------------------------------------       |
+|  • 1. Headline |  [KPI 1] [KPI 2] [KPI 3] [KPI 4]                  |
+|  • 2. Aufschl. |                                                   |
+|  • 3. Mechan.  |  Liniendiagramm: Median-Alter NR + SR             |
+|  • 4. Personen |  1850 .................................. 2025     |
+|                |                                                   |
+|  Dokumentation |  Befund: Alltagsthese stimmt nicht ...            |
++----------------+---------------------------------------------------+
+```
 
-* **Typography**: Font families, sizes, hierarchy of text elements (titles, labels, annotations, body text).
-* **Colour palette**: Primary and secondary colours, background, accent colours. Provide colour codes (hex/RGB).
-* **Spacing and alignment**: Grid system, margins, padding, whitespace strategy.
-* **Branding**: Integration of organisational identity, logos, visual style guides, if applicable.
-* **Accessibility**: Considerations for colour-blindness, contrast ratios, screen reader compatibility, font legibility.
+Innerhalb jeder Seite folgt die Komposition einem konsistenten Muster: Titel, kurze Einleitung mit der Teilfrage, dann die Visualisierung beziehungsweise mehrere Visualisierungen vertikal gestapelt, abschliessend eine schriftliche Beobachtung. Die Streamlit-Layoutoption `wide` gibt mehr Breite für die Diagramme; der Inhalt scrollt vertikal. Es existiert keine zweispaltige Anordnung innerhalb einer Seite, mit Ausnahme der KPI-Karten auf der Headline-Seite und der Top-10-Listen auf der Personen-Seite, wo `st.columns()` für nebeneinanderliegende Vergleiche genutzt wird.
 
-## Prototype Description
-Document the developed prototype(s):
+Koordinierte Interaktion zwischen mehreren Views ist im aktuellen Prototypen nicht implementiert. Die Hierarchie ist linear: die Seite ist das primäre Navigationsmittel, eine zusätzliche Detail-Ebene innerhalb einer Seite gibt es nicht. Die Responsive-Anpassung folgt den Streamlit-Defaults; auf schmalen Bildschirmen kollabiert die Sidebar in ein Burger-Menü, und Plotly-Charts skalieren über `use_container_width=True`.
 
-* **Prototype fidelity**: Low-fidelity (sketches, wireframes), medium-fidelity (static mockups), high-fidelity (interactive implementation)?
-* **Screenshots and/or link**: Include representative screenshots of the prototype. If the prototype is accessible online, provide the URL.
-* **Technology stack**: Tools, libraries and frameworks used for implementation (e.g. D3.js, Plotly, Tableau, Power BI, Streamlit, Observable, etc.).
-* **Code and version control**: Link to the code repository, branch or tag corresponding to the current prototype version.
+## Interaktionsdesign
 
-## Design Rationale and Iterations
-Document key design decisions, alternatives considered and the rationale for the chosen approach. This section ensures traceability and supports the evaluation phase.
+Die Interaktivität bleibt auf das Minimum beschränkt, das den narrativen Bogen unterstützt, ohne ihn zu erschweren.
 
-* **Design alternatives**: What alternative designs were considered? Sketches, mockups or descriptions of discarded approaches can be valuable for documentation.
-* **Design rationale**: Why was the chosen design preferred? Reference the project objectives, user needs (jobs, pains, gains) and the three value dimensions (cognitive, communicative, experiential).
-* **Iteration history**: If the design evolved through multiple iterations (e.g. based on informal feedback or internal reviews), briefly describe the key changes and their motivation.
+* **Navigation zwischen Seiten:** Klick auf einen Sidebar-Eintrag wechselt die Seite. Diese Interaktion adressiert direkt die Persona Marco (Persona im Charta-Dokument), der laut Aufgabenbeschreibung in wenigen Minuten eine Übersicht möchte und nur bei Interesse Details aufrufen will.
+* **Hover-Tooltips auf allen Plotly-Charts:** Beim Überfahren eines Datenpunktes erscheint die exakte Zahl. Bei der Headline-Linie etwa wird pro Jahr das Median-Alter pro Kammer eingeblendet. Diese Funktion adressiert insbesondere die Persona Sarah (Datenjournalistin), die für ihre Recherche zitierfähige Zahlen mit Stichtagsangabe braucht.
+* **Zoom und Pan auf Plotly-Charts:** Standardfunktionalität von Plotly, nicht aktiv beworben in der UI, aber für Power-User verfügbar. Erlaubt es, in ein bestimmtes Jahrzent hineinzuzoomen.
 
-## Conclusions and Next Steps
-Summarise the key design decisions and their expected impact on the project objectives. Identify open questions, known limitations of the current prototype and topics to be addressed in the [Evaluation](evaluation.qmd) phase.
+Auf eine globale Filterleiste (z. B. „Zeitraum von / bis", „nur ausgewählte Parteien anzeigen") haben wir bewusst verzichtet. Solche Filter erhöhen die Mächtigkeit auf Kosten der Aussagekraft.
+
+State Management beschränkt sich auf den aktuellen Seitenkontext; es gibt keine seitenübergreifenden Filter oder gespeicherten Selektionen. `@st.cache_data` cached die teuren Aggregationen (etwa `yearly_chamber_stats()`), sodass die App nach dem ersten Rendering responsive bleibt.
+
+## Visueller Stil und Ästhetik
+
+**Typografie.** Standard-Schriftfamilie aus dem Streamlit-Default-Theme (Source Sans Pro, sans-serif). Hierarchie wird über die `st.title`, `st.subheader` und `st.markdown` Konventionen abgebildet. Innerhalb der Plotly-Diagramme ist die Schriftgrösse auf die Plotly-Defaults gesetzt; Achsentitel und Diagrammtitel sind deutsch und vollständig ausgeschrieben.
+
+**Farbpalette.**
+
+| Element | Farbcode | Verwendung |
+|---|---|---|
+| Nationalrat | `#1f4e79` | Linie, Histogramm, Default für Hauptelemente |
+| Ständerat | `#e07b3a` | Linie, Akzentfarbe |
+| Hintergrund | `#FFFFFF` | Streamlit-Default |
+| Sekundärtext | `#666666` | Achsenbeschriftungen, Captions |
+
+Plus eine kategoriale Palette mit sechs Werten (SVP, SP, FDP-Liberale, Die Mitte, GRÜNE, glp) für die Partei-Aufschlüsselung.
+
+**Spacing und Alignment.** Wir verwenden das Streamlit-Standardlayout. Diagramme nutzen die volle Containerbreite (`use_container_width=True`), Tabellen ebenfalls. Zwischen den vertikal gestapelten Sektionen kommt `st.divider()` oder eine `st.subheader()` als visueller Trenner zum Einsatz.
+
+## Prototypbeschreibung
+
+* **Fidelity:** High-Fidelity, produktionsbereiter interaktiver Prototyp.
+* **Technologie:** Streamlit Seite mit Plotly Grafiken, gehostet auf eigenen Server.
+* **Online:** Alles unter einer Domäne: [vdss.cboss.dev/streamlit](https://vdss.cboss.dev/streamlit)
+
+## Design-Rationale und Iterationen
+
+**Pivot vom Abstimmungs- zum Altersthema.** Die erste Iteration des Visualisierungsprodukts beschäftigte sich mit Abstimmungsverhalten, Parteikoalitionen und Sprechaktivität auf Basis derselben OpenParlData-Quelle. Sechs Seiten waren angedacht: Übersicht, Zeitverlauf, Geschäfte, Koalitionen, Parteidisziplin und Parlamentarier. Während der Implementierung zeigte sich, dass diese Sicht ohne politikwissenschaftliches Vorwissen für uns schwierig wurde umzusetzen. Wir haben deshalb auf eine einzige falsifizierbare Hypothese eingegrenzt, die ohne Domänenwissen verständlich ist.
+
+**Design-Rationale.** Die Wahl der vier Seiten folgt einer expliziten  Logik: Antwort, Aufschlüsselung, Mechanismus, Personen. Diese Reihenfolge beantwortet schnell die Hauptfrage und erlaubt Nutzer:innen bei Bedarf tiefer in die Materie zu lesen. Die Aggregation der Daten erlaubt es über das ganze Produkt hinweg schnell und ohne grosses Vorwissen was vermittelt wird zu verstehen.
+
+## Schluss
+
+Die wesentlichen Designentscheidungen sind getroffen und im Prototypen umgesetzt. Die Headline-Grafik liefert die Antwort auf die Forschungsfrage in unter zehn Sekunden Lesezeit. Die nachgelagerten Seiten beantworten die Folgefragen, ohne die Hauptaussage zu verwässern.
+
+Offene Punkte für die [Evaluation](evaluation.qmd):
+
+* **Wirkung der Personifizierung:** Ob die Top-10 Tabellen auf Seite 4 die abstrakten Befunde tatsächlich greifbarer machen, müssten Nutzer:innen-Tests zeigen. Aktuell ist das eine Annahme.
+* **Mobile Lesbarkeit:** Die Streamlit-Defaults sind responsive, aber die Sidebar-Navigation wirkt auf einem Smartphone gedrungen. Persona Marco nutzt explizit Tablet und Smartphone, was eine zusätzliche mobile Iteration möglicherweise bedrüngen könnte.
+* **Screenreader-Zugänglichkeit:** Plotly-Charts haben nur rudimentäre Screenreader-Unterstützung. Ein Fallback mit beschreibendem Alt-Text pro Diagramm wäre eine sinnvolle Ergänzung, falls die Zielgruppe entsprechend erweitert wird.
+
+## Quellen
+
+::: {#refs}
+:::

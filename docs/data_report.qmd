@@ -1,147 +1,402 @@
-# Data Report
-All information on the data used in the project is compiled in the data report in order to ensure the traceability and reproducibility of the results and to enable a systematic expansion of the database.
+---
+title: "Datenbericht"
+---
 
-Typically, in the exploratory analysis of the acquired raw data, quality and other issues are identified, which require pre-processing, merging of individual datasets and feature engineering into processed datasets. Therefore, this template provides a separate section for the processed data, which then serves as a starting point for the modelling activities. This needs to be adapted to the specific project requirements.
+# Datenbericht
 
-## Raw data
-### Overview Raw Datasets
-
-: Overview of raw datasets used in the project. {#tbl-raw-overview}
-
-| Name | Quelle | Storage location |
-|----------------|-----------------------------------------|--------------------------------------------------------------------------|
-| Dataset 1      | Name/short description of the data source | Link and/or short description of the location where the data is stored, e.g. accessible to the team |
-| Dataset 2      | …                                       | …                                                                        |
-
-### Details Dataset 1
-
-- Description of what information the dataset contains
-- Details of the data source/provider
-- Information on data procurement: description and possibly references to resources (download scripts, tools, online services, ...). Any new team member should be able to acquire the data indepentendently following these instructions.
-- Legal aspects of data use, licences, etc.
-- Data governance aspects: Categorisation of the data based on internal business requirements, e.g. public, business-relevant, personal
-- If applicable: categorisation into dependent (target variable, regressor) and independent (regressor) variables
-- ...
-
-#### Data Catalogue
-The data catalogue basically represents an extended schema of a relational database.
-
-
-: Data catalogue for Dataset 1. {#tbl-data-catalogue}
-
-| Column index | Column name |  Datatype | Values (Range, validation rules) | Short description |
-|---|---|---|---|---|
-| 1 |   |   |   |   |
-| 2 |   |   |   |   |
-|   |   |   |   |   |
-
-
-#### If applicable: Entity Relationship Diagram
-
-
-#### Data Chracteristics and Quality
-
-The methods of exploratory data analysis are used to describe relevant characteristics of the data and identify data quality issues. This includes, for example, 
-
-the univariate andalysis of numerical variables:
-
-* Number or fraction
-    * of unique values
-    * of missing values
-    * of zero values
-    * of negative values
-* Frequency distribution
-* Extreme values (minimum and maximum)
-* Histogram
-* Measures of central tendency:
-    * arithmetic mean
-    * median
-    * mode
-* Measures of dispersion and visualisation of dispersion:
-    * Range
-    * Quantiles and interquartile range (IQR)
-    * Box plot
-    * Variance and standard deviation 
-
-and for categorical variables:
-
-* number of classes
-* and the corresponding distribution of values
-* fraction of missing values
-
-The correlation between variables in the form of
-
-* correlation coefficients (e.g. Pearson, Spearman, Kendall)
-* and corresponding visualizations, e.g. scatter plot, heatmap, grouped box plot (for categorical-numerical relationships), ...
-
-
-The results the exploratory data analysis should be summarised here (code and full output in the `eda` subfolder) and the implications for the subsequent data pre-processing, visualization design and implementation steps should be discussed. Is the data quality and quantity sufficient to achieve the visualisation goals? Is it necessary to acquire additional or different data? Are there any limitations that need to be considered in the design and implementation of the visualisation product? Are there any specific data characteristics that can be used to enhance the visualisation design? For example, if there are a lot of missing values in a dataset, this might need to be taken into account in the design of the visualisation product, e.g. by using specific visual encodings to indicate missing values or by providing options for filtering or imputing missing values. 
-
-Tip: `Ydata-profiling` is a Python library that can be used to perform exploratory data analysis and generate a comprehensive report on the characteristics of the data, including the distribution of values, missing values, correlations between variables, and more. This can be a useful tool to generate the full analysis in the code section and then only include the relevant information here in the data report.
-
-This is an example on how to incorporate executable Python code and show a figure output:
+Der Datenbericht dokumentiert alle im Projekt verwendeten Daten, von der Rohdatenbeschaffung bis hin zu den drei abgeleiteten Analyse-Datensätzen. Ziel ist die Nachvollziehbarkeit der Befunde und die Möglichkeit, den vollen Datenfluss von Dritten reproduzieren zu lassen.
 
 ```{python}
-#| label: fig-demo
-#| fig-cap: "Distribution of monthly revenue across product categories (sample data)."
-#| echo: true
-#| code-fold: true
+#| label: setup
+#| echo: false
+import warnings
+warnings.filterwarnings("ignore")
+
+from pathlib import Path
+import pandas as pd
 import matplotlib.pyplot as plt
+import seaborn as sns
 
-# Sample data
-categories = ['Electronics', 'Clothing', 'Food', 'Books', 'Sports']
-revenue = [42000, 28500, 35200, 12800, 19400]
+sns.set_theme(style="whitegrid")
+plt.rcParams.update({"figure.dpi": 120})
 
-# Create the bar chart
-fig, ax = plt.subplots(figsize=(6, 3.75))
+DATA_DIR = Path("..") / "data" / "processed"
 
-bars = ax.bar(categories, revenue, color='#4C78A8', edgecolor='white')
 
-ax.set_xlabel('Product Category')
-ax.set_title('Monthly Revenue by Product Category')
+def catalogue(df: pd.DataFrame, cols: list[str] | None = None) -> pd.DataFrame:
+    use = cols if cols is not None else list(df.columns)
+    return pd.DataFrame({
+        "Index": range(1, len(use) + 1),
+        "Spalte": use,
+        "Datentyp": [str(df[c].dtype) for c in use],
+        "Fehlend (%)": [round(df[c].isna().mean() * 100, 1) for c in use],
+        "Unique": [df[c].nunique(dropna=True) for c in use],
+    })
+```
 
-ax.spines['top'].set_visible(False)
-ax.spines['right'].set_visible(False)
-ax.spines['left'].set_visible(False)
-ax.yaxis.set_visible(False)
-ax.tick_params(axis='x', length=0)
+## Rohdaten
 
-# Add value labels on bars
-for bar, val in zip(bars, revenue):
-    ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 500,
-            f'{val:,.0f}', ha='center', va='bottom', fontsize=9)
+### Übersicht der Rohdatensätze
 
+Wir beziehen die Daten vom öffentlichen Export der OpenParlData-Plattform [@openparldata]. Die Plattform bietet eine API, wir nutzen jedoch direkt die Quelldateien unter [files.openparldata.ch/exports/](https://files.openparldata.ch/exports/), die wöchentlich als gzippte NDJSON-Dateien aktualisiert werden. Für unsere Fragestellung (Alter, Eintritt und Amtsdauer von Bundespolitiker:innen) reichen zwei der rund 15 verfügbaren Exports.
+
+| Name | Quelle | Speicherort |
+|---|---|---|
+| `persons.ndjson` | OpenParlData Export: Personeneinträge inkl. Biografie, Partei, Wahlkreis. | `data/raw/persons.ndjson` (entpackt), bezogen von `https://files.openparldata.ch/exports/persons.ndjson.gz` |
+| `memberships.ndjson` | OpenParlData Export: Mitgliedschaften in Gremien (Räte, Kommissionen, Fraktionen, Parteien). | `data/raw/memberships.ndjson` (entpackt), bezogen von `https://files.openparldata.ch/exports/memberships.ndjson.gz` |
+
+: Übersicht der verwendeten Rohdatensätze. {#tbl-raw-overview}
+
+Das Beschaffungs-Skript `eda/1_gather_data.py` lädt beide Dateien herunter, entpackt sie und konvertiert sie nach Parquet. Bereits vorhandene Dateien werden nicht erneut heruntergeladen.
+
+```python
+# eda/1_gather_data.py (Auszug)
+OPENPARL_BASE = "https://files.openparldata.ch/exports"
+FILES = ["persons", "memberships"]
+
+def ensure_ndjson(name: str) -> Path:
+    ndjson_path = RAW_DIR / f"{name}.ndjson"
+    gz_path = RAW_DIR / f"{name}.ndjson.gz"
+    if ndjson_path.exists():
+        return ndjson_path
+    if not gz_path.exists():
+        urllib.request.urlretrieve(f"{OPENPARL_BASE}/{name}.ndjson.gz", gz_path)
+    with gzip.open(gz_path, "rb") as f_in, open(ndjson_path, "wb") as f_out:
+        shutil.copyfileobj(f_in, f_out)
+    return ndjson_path
+```
+
+**Rechtliches und Governance.** OpenParlData ist eine öffentliche Initiative ohne formelle Lizenzangabe; die zugrundeliegenden Daten stammen aus den offiziellen Biografien der parlament.ch Webseite und sind als öffentlich zugängliche Verwaltungsdaten zu verstehen. Die Daten sind somit als "öffentlich" einzuordnen.
+
+### Details `persons.ndjson`
+
+Der Personen-Export enthält biografische Stammdaten zu allen je erfassten Mandatsträger:innen auf Bundes- und Kantonsebene: Name, Geburtsdatum, Geschlecht, Partei, Wahlkreis, parlamentarischer Sektor (Nationalrat oder Ständerat), aktuelle Aktivität sowie eine Vielzahl von Querverweisen auf externe IDs (Wikidata, parlament.ch). Wir filtern für unsere Analyse auf `body_key == "CHE"`, also auf die Bundesebene.
+
+#### Datenkatalog
+
+Der vollständige Katalog mit allen 60 Spalten liegt unter `eda/output/catalogue_persons_clean_CHE.csv`. Hier sind die für die Altersanalyse relevanten Spalten:
+
+```{python}
+#| label: tbl-cat-persons
+#| tbl-cap: "Datenkatalog persons.ndjson (Auszug der projektrelevanten Spalten)."
+#| echo: false
+persons_raw = pd.read_parquet(DATA_DIR / "persons_clean.parquet")
+persons_che = persons_raw[persons_raw["body_key"] == "CHE"].copy()
+cols = [
+    "id", "body_key", "fullname", "firstname", "lastname",
+    "birthday", "gender", "party_de", "party_harmonized_de",
+    "electoral_district_de", "parliament_sector", "active",
+]
+catalogue(persons_che, cols)
+```
+
+#### Datencharakteristik und Qualität
+
+Die zentrale Variable für unsere Analyse ist `birthday`. Auf Bundesebene ist die Abdeckung exzellent:
+
+```{python}
+#| label: persons-coverage
+#| echo: false
+n = len(persons_che)
+n_bday = persons_che["birthday"].notna().sum()
+print(f"CHE-Personen total: {n:,}")
+print(f"Davon mit Geburtsdatum: {n_bday:,} ({n_bday / n * 100:.1f} %)")
+
+bd = pd.to_datetime(persons_che["birthday"], errors="coerce").dropna()
+bd_valid = bd[(bd.dt.year >= 1800) & (bd.dt.year <= 2015)]
+print(f"Im plausiblen Bereich (1800–2015): {len(bd_valid):,}")
+print(f"Frühester Geburtstag: {bd_valid.min().date()}")
+print(f"Spätester Geburtstag: {bd_valid.max().date()}")
+```
+
+```{python}
+#| label: fig-birthday-by-decade
+#| fig-cap: "Anzahl CHE-Personen mit erfasstem Geburtsdatum je Geburtsjahrzent. Die Abdeckung ist über alle Jahrzente hoch."
+#| echo: false
+p = persons_che.copy()
+p["birth_year"] = pd.to_datetime(p["birthday"], errors="coerce").dt.year
+p_valid = p[p["birth_year"].between(1800, 2015)]
+by_dec = (p_valid["birth_year"] // 10 * 10).value_counts().sort_index()
+
+fig, ax = plt.subplots(figsize=(8, 3.5))
+ax.bar(by_dec.index.astype(int), by_dec.values, width=8, color="#1f4e79")
+ax.set_xlabel("Geburtsjahrzent")
+ax.set_ylabel("Anzahl CHE-Personen")
+ax.set_title("Geburtsdaten-Abdeckung auf Bundesebene")
 plt.tight_layout()
 plt.show()
 ```
 
-Then the figure can be referenced with @fig-demo.
+Die Geschlechtsangabe ist ebenfalls flächendeckend erfasst:
 
-## Processed Data
-### Overview Processed Datasets
+```{python}
+#| label: persons-gender
+#| echo: false
+gender = persons_che["gender"].value_counts(dropna=False)
+gender_df = pd.DataFrame({
+    "Geschlecht": gender.index.fillna("(fehlend)") if hasattr(gender.index, "fillna") else gender.index,
+    "Anzahl": gender.values,
+    "Anteil (%)": (gender.values / len(persons_che) * 100).round(1),
+})
+gender_df
+```
 
-: Overview of processed datasets used in the project. {#tbl-processed-overview}
+Bei der Parteizugehörigkeit fällt auf, dass viele Parteinamen über die Zeit gewandert sind (CVP, Mitte, FDP-Liberale usw.). OpenParlData stellt unter `party_harmonized_de` bereits konsolidierte Bezeichnungen bereit; wir nutzen sie für historische Vergleiche.
 
-| Name | Quelle | Storage location |
-|----------------|-----------------------------------------|--------------------------------------------------------------------------|
-| Processed Dataset 1      | Name/short description of the data source | Link and/or short description of the location where the data is stored, e.g. accessible to the team |
-| Processed Dataset 2      | …                                       | …                                                                        |
+```{python}
+#| label: tbl-party-top
+#| tbl-cap: "Häufigste harmonisierte Parteibezeichnungen (Top 10)."
+#| echo: false
+persons_che["party_harmonized_de"].value_counts(dropna=False).head(10).to_frame("Anzahl")
+```
 
-### Details Processed Dataset 1
+### Details `memberships.ndjson`
 
-- Description of what information the dataset contains
-- Details and reasons for the processing steps -> Traceability and ensuring reproducibility
-- How can the data be accessed? Description, scripts, tools, ...
-- ...
+Der Mitgliedschafts-Export enthält pro Person eine Zeile pro Gremium, in dem die Person sass oder noch sitzt: Nationalrat, Ständerat, Kommissionen, Fraktionen, Interessengruppen, Parteien. Jede Mitgliedschaft hat ein Anfangs- und Enddatum (`begin_date`, `end_date`), einen Typ (`type_harmonized_de`) und einen Gruppennamen (`group_name_de`). Diese Doppelung erlaubt es uns, die Parlamentssitze (Typ `Parlament (Legislativrat)` mit Gruppe `Nationalrat` oder `Ständerat`) sauber zu isolieren.
 
-#### Data Catalogue
+#### Datenkatalog
 
+Vollständiger Katalog: `eda/output/catalogue_memberships_clean_CHE.csv`. Relevant für unsere Analyse:
 
-#### If applicable: Entity Relationship Diagram
+```{python}
+#| label: tbl-cat-memberships
+#| tbl-cap: "Datenkatalog memberships.ndjson (Auszug der projektrelevanten Spalten)."
+#| echo: false
+memb_raw = pd.read_parquet(DATA_DIR / "memberships_clean.parquet")
+memb_che = memb_raw[memb_raw["body_key"] == "CHE"].copy()
+cols = [
+    "id", "body_key", "person_id", "group_name_de", "role_name_de",
+    "begin_date", "end_date", "active", "type_harmonized_de",
+]
+catalogue(memb_che, cols)
+```
 
+#### Datencharakteristik und Qualität
 
-#### Data Chracteristics and Quality
+Auf Bundesebene existieren rund 22'000 Mitgliedschaftseinträge. Die Mehrheit entfällt auf Kommissionen und Interessengruppen; für unsere Frage interessieren ausschliesslich die Mitgliedschaften vom Typ `Parlament (Legislativrat)`:
 
+```{python}
+#| label: fig-membership-types
+#| fig-cap: "Verteilung der CHE-Mitgliedschaften nach Typ. Für die Altersanalyse verwenden wir ausschliesslich den Typ 'Parlament (Legislativrat)'."
+#| echo: false
+counts = memb_che["type_harmonized_de"].value_counts()
+fig, ax = plt.subplots(figsize=(8, 4))
+colors = ["#1f4e79" if t == "Parlament (Legislativrat)" else "#cccccc" for t in counts.index]
+ax.barh(counts.index[::-1], counts.values[::-1], color=colors[::-1])
+ax.set_xlabel("Anzahl Mitgliedschaften")
+plt.tight_layout()
+plt.show()
+```
 
-### Details Processed Dataset 2
-...
+Innerhalb des Typs `Parlament (Legislativrat)` ergibt sich eine klare Zweiteilung in Nationalrat und Ständerat:
+
+```{python}
+#| label: tbl-parl-groups
+#| tbl-cap: "Aufteilung der Parlamentsmitgliedschaften auf die beiden Kammern."
+#| echo: false
+parl = memb_che[memb_che["type_harmonized_de"] == "Parlament (Legislativrat)"]
+parl["group_name_de"].value_counts().to_frame("Anzahl")
+```
+
+Das Beobachtungsfenster reicht bis 1848 zurück:
+
+```{python}
+#| label: memb-date-range
+#| echo: false
+bd = pd.to_datetime(parl["begin_date"], errors="coerce")
+ed = pd.to_datetime(parl["end_date"], errors="coerce")
+print(f"Frühestes begin_date: {bd.min().date()}")
+print(f"Spätestes begin_date: {bd.max().date()}")
+print(f"Anteil ohne end_date (laufende Mandate): {ed.isna().mean() * 100:.1f} %")
+```
+
+## Verarbeitete Daten
+
+Aus den beiden Rohdatensätzen erzeugt `eda/2_etl_politicians.py` drei kompakte Analyse-Tabellen. Die Verarbeitungsschritte sind:
+
+1. **Bundesebene isolieren** (`body_key == "CHE"`).
+2. **Geburtstage validieren** (Geburtsjahr zwischen 1800 und 2015).
+3. **Parlamentssitze isolieren** (`type_harmonized_de == "Parlament (Legislativrat)"` und Gruppe Nationalrat oder Ständerat).
+4. **Join** Mitgliedschaften × Personen via `person_id`.
+5. **Anreichern** pro Mitgliedschaft mit `entry_age`, `exit_age`, `duration_years`.
+
+```python
+# eda/2_etl_politicians.py (Auszug)
+parl["entry_age"] = ((parl["begin_date"] - parl["birthday"]).dt.days / 365.25).round(2)
+parl["exit_age"]  = ((parl["end_date_eff"] - parl["birthday"]).dt.days / 365.25).round(2)
+parl["duration_years"] = ((parl["end_date_eff"] - parl["begin_date"]).dt.days / 365.25).round(2)
+```
+
+Für laufende Mandate (kein `end_date`) verwenden wir das heutige Datum als provisorisches Ende; die betroffenen Zeilen werden über `is_active = True` markiert, sodass nachgelagerte Auswertungen sie bei Bedarf ausschliessen können.
+
+### Übersicht der verarbeiteten Datensätze
+
+| Name | Beschreibung | Speicherort |
+|---|---|---|
+| `politicians.parquet` | Eine Zeile pro Bundespolitiker:in mit aggregierten Karriere-Kennzahlen. | `data/processed/politicians.parquet` |
+| `parliament_memberships.parquet` | Eine Zeile pro NR- oder SR-Mitgliedschaft mit Alters- und Dauer-Berechnungen. | `data/processed/parliament_memberships.parquet` |
+| `parliament_yearly.parquet` | Jahres-Snapshot per 1. Juli: wer war im Parlament, wie alt? | `data/processed/parliament_yearly.parquet` |
+
+: Übersicht der drei verarbeiteten Datensätze. {#tbl-processed-overview}
+
+### Details `politicians.parquet`
+
+Eine Zeile pro Person, die mindestens einmal in Nationalrat oder Ständerat sass und ein erfasstes Geburtsdatum hat.
+
+```{python}
+#| label: tbl-cat-politicians
+#| tbl-cap: "Datenkatalog politicians.parquet."
+#| echo: false
+politicians = pd.read_parquet(DATA_DIR / "politicians.parquet")
+catalogue(politicians)
+```
+
+```{python}
+#| label: politicians-summary
+#| echo: false
+print(f"Anzahl Bundespolitiker:innen in der Analyse: {len(politicians):,}")
+print(f"Davon aktuell im Amt: {politicians['currently_active'].sum():,}")
+print()
+print("Univariate Statistiken (Jahre):")
+politicians[["entry_age", "total_tenure_years", "age_today"]].describe(
+    percentiles=[0.1, 0.5, 0.9]
+).round(1)
+```
+
+```{python}
+#| label: fig-entry-age
+#| fig-cap: "Verteilung des Eintrittsalters über alle 3'546 Bundespolitiker:innen (1850–2025)."
+#| echo: false
+fig, ax = plt.subplots(figsize=(8, 3.5))
+ax.hist(politicians["entry_age"].dropna(), bins=40, color="#1f4e79", edgecolor="white")
+ax.axvline(politicians["entry_age"].median(), color="#e07b3a", linestyle="--",
+           label=f"Median = {politicians['entry_age'].median():.1f} J.")
+ax.set_xlabel("Eintrittsalter (Jahre)")
+ax.set_ylabel("Anzahl Personen")
+ax.legend()
+plt.tight_layout()
+plt.show()
+```
+
+```{python}
+#| label: fig-entry-vs-tenure
+#| fig-cap: "Eintrittsalter gegen Gesamt-Mandatsdauer. Wer früh einsteigt, kann länger bleiben; die schwache negative Korrelation ist sichtbar."
+#| echo: false
+done = politicians[~politicians["currently_active"]].copy()
+fig, ax = plt.subplots(figsize=(8, 4))
+ax.scatter(done["entry_age"], done["total_tenure_years"], alpha=0.3, s=10, color="#1f4e79")
+ax.set_xlabel("Eintrittsalter (Jahre)")
+ax.set_ylabel("Gesamt-Mandatsdauer (Jahre)")
+corr = done[["entry_age", "total_tenure_years"]].corr().iloc[0, 1]
+ax.set_title(f"Pearson-Korrelation r = {corr:.2f}")
+plt.tight_layout()
+plt.show()
+```
+
+### Details `parliament_memberships.parquet`
+
+Eine Zeile pro einzelne Mitgliedschaft im Nationalrat oder Ständerat.
+
+```{python}
+#| label: tbl-cat-pmem
+#| tbl-cap: "Datenkatalog parliament_memberships.parquet."
+#| echo: false
+pmem = pd.read_parquet(DATA_DIR / "parliament_memberships.parquet")
+catalogue(pmem)
+```
+
+```{python}
+#| label: fig-duration-by-chamber
+#| fig-cap: "Verteilung der Mandatsdauer pro Kammer, nur abgeschlossene Mandate. Der Ständerat zeigt längere Mandate (Median sechs Jahre versus vier im Nationalrat) bei stärkerer Streuung."
+#| echo: false
+done_mem = pmem[~pmem["is_active"]].copy()
+fig, ax = plt.subplots(figsize=(8, 3.5))
+sns.boxplot(
+    data=done_mem,
+    x="duration_years", y="chamber",
+    palette={"Nationalrat": "#1f4e79", "Ständerat": "#e07b3a"},
+    ax=ax,
+)
+ax.set_xlabel("Mandatsdauer (Jahre)")
+ax.set_ylabel("")
+plt.tight_layout()
+plt.show()
+```
+
+### Details `parliament_yearly.parquet`
+
+Jahres-Snapshot: für jedes Jahr von 1850 bis 2025 eine Zeile pro Person, die am 1. Juli dieses Jahres in NR oder SR sass, plus ihr Alter zu jenem Stichtag. Dieser Datensatz ist Kernstück der Haupt-Visualisierung.
+
+```{python}
+#| label: tbl-cat-yearly
+#| tbl-cap: "Datenkatalog parliament_yearly.parquet."
+#| echo: false
+yearly = pd.read_parquet(DATA_DIR / "parliament_yearly.parquet")
+catalogue(yearly)
+```
+
+```{python}
+#| label: fig-yearly-headcount
+#| fig-cap: "Anzahl Parlamentsmitglieder pro Jahr und Kammer. Der Nationalrat wuchs in mehreren Etappen auf die heutigen 200 Sitze; der Ständerat hält bei 46."
+#| echo: false
+yearly_n = yearly.groupby(["year", "chamber"]).size().reset_index(name="n")
+fig, ax = plt.subplots(figsize=(8, 3.5))
+for chamber, color in [("Nationalrat", "#1f4e79"), ("Ständerat", "#e07b3a")]:
+    d = yearly_n[yearly_n["chamber"] == chamber]
+    ax.plot(d["year"], d["n"], label=chamber, color=color)
+ax.set_xlabel("Jahr")
+ax.set_ylabel("Anzahl Sitze")
+ax.legend()
+plt.tight_layout()
+plt.show()
+```
+
+```{python}
+#| label: fig-median-age
+#| fig-cap: "Median-Alter pro Kammer über die Zeit. Das ist die Headline-Grafik der Analyse und beantwortet die Forschungsfrage direkt."
+#| echo: false
+yearly_med = yearly.groupby(["year", "chamber"])["age"].median().reset_index()
+fig, ax = plt.subplots(figsize=(8, 3.5))
+for chamber, color in [("Nationalrat", "#1f4e79"), ("Ständerat", "#e07b3a")]:
+    d = yearly_med[yearly_med["chamber"] == chamber]
+    ax.plot(d["year"], d["age"], label=chamber, color=color, linewidth=2)
+ax.set_xlabel("Jahr")
+ax.set_ylabel("Median-Alter")
+ax.set_ylim(35, 70)
+ax.legend()
+plt.tight_layout()
+plt.show()
+```
+
+## Schlüsselbefunde
+
+| Befund | Quelle |
+|---|---|
+| Median-Alter NR in den 2020ern: 51.6 Jahre, so jung wie seit 100 Jahren nicht mehr. | `parliament_yearly` Median pro Jahrzent |
+| Median-Alter SR liegt aktuell bei rund 60 Jahren und ist konstant höher als NR. | `parliament_yearly` Median pro Jahrzent |
+| Höhepunkt der Alterung war nicht heute, sondern in den 1950ern (NR 56, SR 61). | `parliament_yearly` Median pro Jahrzent |
+| Eintrittsalter ist seit 1880 stabil bei 46 bis 49 Jahren. | `politicians.entry_age` Median pro Eintrittsjahrzent |
+
+## Datenqualität und Limitierungen
+
+- **Geburtstagslücke:** Rund 7 % der Bundespolitiker:innen haben kein erfasstes Geburtsdatum. Die Lücke konzentriert sich auf historische Datensätze. Für moderne Mandate ist die Abdeckung praktisch vollständig.
+- **Aktive Mandate:** Für laufende Mandate ist `end_date` leer; für Berechnungen wird das heutige Datum als provisorisches Ende verwendet.
+- **Parteibezeichnungen:** Parteinamen ändern sich (CVP zu Die Mitte, FDP zu FDP-Liberale). Wir nutzen die harmonisierten Bezeichnungen `party_harmonized_de`.
+- **Stichtag des Snapshots:** Wir messen die Altersverteilung jeweils am 1. Juli. Mandate, die zwischen Januar und Juli beginnen oder enden, sind in dem jeweiligen Jahr je nach Datum enthalten oder nicht.
+
+## Reproduzierbarkeit
+
+```bash
+uv sync
+uv run python eda/1_gather_data.py     # Download + NDJSON zu Parquet
+uv run python eda/2_etl_politicians.py # ETL für die Altersanalyse
+uv run python eda/3_eda.py             # EDA-Dump in eda/output/
+uv run streamlit run deployment/app.py # Interaktives Visualisierungsprodukt
+```
+
+Die vollständigen EDA-Outputs befinden sich im Ordner `eda/output/`.
+
+## Quellen
+
+::: {#refs}
+:::

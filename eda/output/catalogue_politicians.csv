@@ -1,0 +1,17 @@
+index,column,dtype,n_missing,pct_missing,n_unique,min,median,max,mean,top_values
+1,person_id,float64,0,0.0,3546,119.0,20321.5,25190.0,20099.448,
+2,firstname,object,0,0.0,1307,,,,,Hans (91); Paul (60); Walter (54)
+3,lastname,object,0,0.0,2256,,,,,Müller (43); Schmid (23); Weber (21)
+4,birthday,datetime64[ms],0,0.0,3437,,,,,1824-01-08 00:00:00 (3); 1903-07-08 00:00:00 (3); 1894-01-19 00:00:00 (3)
+5,gender,object,0,0.0,2,,,,,m (3253); f (293)
+6,party_de,object,16,0.45,77,,,,,FDP-Liberale (1167); CVP (717); SP (488)
+7,party_harmonized_de,object,419,11.82,21,,,,,FDP.Die Liberalen (1168); Christlichdemokratische Volkspartei der  (717); Sozialdemokratische Partei (489)
+8,canton,object,1,0.03,74,,,,,Bern (466); Zürich (440); Waadt (296)
+9,first_entry_date,datetime64[ms],0,0.0,680,,,,,1848-11-06 00:00:00 (122); 1999-12-06 00:00:00 (88); 1919-12-01 00:00:00 (77)
+10,last_seat_end,datetime64[ms],0,0.0,1146,,,,,2026-05-17 00:00:00 (237); 1999-12-05 00:00:00 (88); 1995-12-03 00:00:00 (76)
+11,entry_age,float64,0,0.0,2156,21.28,46.255,81.41,46.323,
+12,total_tenure_years,float64,0,0.0,1365,-0.04,8.99,48.48,10.697,
+13,num_memberships,int64,0,0.0,9,1.0,1.0,9.0,1.523,
+14,chambers,object,0,0.0,3,,,,,"Nationalrat (2660); Ständerat (566); Nationalrat,Ständerat (320)"
+15,currently_active,bool,0,0.0,2,,,,,False (3309); True (237)
+16,age_today,float64,0,0.0,1572,29.4,133.7,226.3,134.709,

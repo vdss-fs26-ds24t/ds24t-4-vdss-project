@@ -1,16 +1,22 @@
-# Overview 
+---
+title: "Übersicht"
+---
 
-This documentation describes the conception, development and evaluation of a data visualisation product. The goal of the project is to ....
+# Werden Schweizer Bundespolitiker:innen immer älter?
 
-![The vizualization product development process](pics/vizproductprocess.png){#fig-vizprocess}
+Diese Dokumentation beschreibt die Konzeption, Entwicklung und Auswertung eines Datenvisualisierungsprodukts zur Altersstruktur der Schweizer Bundesversammlung von 1850 bis heute.
 
-The methodological procedure of this work follows the process model shown in @fig-vizprocess, which is based on the concepts on data product development outlined in @DoemerKempf2022_1000150238 and the [data science project-template](https://github.com/phonosync/dataviz-project-template) on github.
+**Die Frage:** "Politiker werden immer älter", ein verbreitetes Bauchgefühl. Stimmt es? Wir prüfen die These mit den offiziellen Daten von OpenParlData.ch.
 
-It comprises the following four main phases with the corresponding documentation artefacts:
+**Resultat:** Für den Nationalrat *stimmt es nicht*. Das Median-Alter ist heute (51.6 Jahre) so tief wie seit über 100 Jahren nicht mehr. Den Höhepunkt der Alterung erreichten wir in den 1950er-Jahren, nicht heute. Der Ständerat ist tatsächlich konstant älter, und der Abstand zum Nationalrat hat sich sogar leicht vergrössert.
 
-* **Project Understanding** &rarr; [Project Charta](project_charta.qmd): Context analysis, stakeholder and user analysis (based on the Value Proposition Canvas), formulation of objectives, success criteria, constraints and the visualization concept.
-* **Data Acquisition and Exploration** &rarr; [Data Report](data_report.qmd): Identification and acquisition of relevant data sources, followed by exploratory data analysis to understand data quality and structure.
-* **Visual Encoding and Design** &rarr; [Visualization Design Report](viz_design_report.qmd): Documentation of the data-to-visual mapping, layout and composition, interaction design, visual style and the resulting prototype(s).
-* **Evaluation** &rarr; [Evaluation Report](evaluation.qmd): Assessment of the developed prototype based on success criteria outlined in the project charta, evaluation of stakeholder feedback, checkpoint decision and, if applicable, gathering additional requirements and planning of the deployment.
-* **Deployment** &rarr; [Deployment Report](deployment.qmd): Description of the software architecture and deployment process, as well as the integration of the visualization product into the target environment and processes.
+![Entwicklungsprozess der Visualisierung](pics/vizproductprocess.png){#fig-vizprocess}
 
+Die methodische Vorgehensweise orientiert sich am oben gezeigten Prozessmodell (@fig-vizprocess). Die Dokumentation ist in folgende Hauptphasen gegliedert:
+
+1. **[Projekt Charta](project_charta.qmd)**: Frage, Hypothese, Zielgruppe, Erfolgskriterien.
+2. **[Datenbericht](data_report.qmd)**: Datenquelle, ETL-Schritte und Schlüsselbefunde.
+3. **[Visualisierungsdesign](viz_design_report.qmd)**: Konzeption der vier Diagramme im narrativen Bogen.
+4. **[Evaluation](evaluation.qmd)** und **[Deployment](deployment.qmd)**: Prüfung und Bereitstellung.
+
+Das interaktive Visualisierungsprodukt ist unter [vdss.cboss.dev/streamlit](https://vdss.cboss.dev/streamlit) abrufbar.

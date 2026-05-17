@@ -1,159 +1,179 @@
-# Project Charta
+---
+title: "Projekt Charta"
+---
 
-## Context and Scope
+# Projekt Charta
 
-This project operates within the domain of Swiss politics and civic tech, focusing on the parliamentary debates of the Swiss Federal Assembly.
-The project addresses the semantic landscape of political speeches.
-The core question it seeks to answer is:
+## Kontext und Scope
 
-> *Are Swiss political parties truly polarized in their rhetoric, or do they use similar language and semantic structures when discussing key issues?*
+Das Projekt bewegt sich im Themenfeld der politischen Berichterstattung und des Civic Tech. Im Zentrum steht die demografische Struktur der Schweizer Bundesversammlung, insbesondere die Altersentwicklung von Nationalrat und Ständerat zwischen 1850 und heute.
 
-The expected benefit is to provide transparency and an intuitive, visual way for the public and media to understand the ideological proximity of political actors without having to read thousands of pages of official transcripts.
-The final visualization product will be published as an interactive web-based dashboard using Streamlit.
+In der öffentlichen Debatte wird wiederkehrend das Gefühl artikuliert, das Schweizer Bundesparlament werde zunehmend von älteren Personen dominiert. Die Frage hat auch politische Relevanz: 2013 forderte SP-Fraktionschef Andy Tschümperlin eine Alterslimite von 65 Jahren für Bundespolitiker und löste damit eine kontroverse Debatte aus [@srf2013_alterslimite]. Wir nehmen dieses verbreitete Bauchgefühl als testbare Hypothese auf und prüfen sie mit den offiziellen Daten der Bundesversammlung. Die Kernfrage lautet:
 
-## Project Objectives
+> *Werden Schweizer Bundespolitiker:innen wirklich immer älter, oder ist das ein populärer Mythos?*
 
-* **Exploration**: Enable users to visually explore the ideological and semantic similarities between Swiss politicians and parties based on their official speeches.
-* **Intuition**: Deliver an intuitive interface that translates complex AI-generated text embeddings into an easily readable format for non-technical users.
-* **Interaction**: Provide interactive filters on Party, Canton and Language.
+Der erwartete Nutzen ist eine evidenzbasierte, allgemeinverständliche Antwort. Das Visualisierungsprodukt soll Bürger:innen und Medienschaffenden eine schnelle Möglichkeit bieten, die Altersstruktur ihres Bundesparlaments im historischen Verlauf zu prüfen, ohne dafür Archivrecherchen oder politikwissenschaftliche Vorkenntnisse zu benötigen. Das fertige Produkt wird als interaktives Dashboard via Streamlit publiziert und zusätzlich durch eine begleitende Quarto-Dokumentation auf GitHub Pages dokumentiert.
 
+## Projektziele
+
+* **Exploration**: Den Nutzer:innen ermöglichen, die Altersentwicklung der Bundesversammlung über mehr als 175 Jahre visuell zu erkunden, aufgeschlüsselt nach Kammer, Partei und Geschlecht.
+* **Intuition**: Eine zugängliche Oberfläche, die das Konzept "Median-Alter der Parlamentarier:innen" ohne statistische Vorkenntnisse verständlich macht und durch geeignete Begleittexte einordnet.
+* **Falsifizierbarkeit**: Eine eindeutige, datengestützte Antwort auf die Kernhypothese liefern. Wenn die Daten die These widerlegen, gehört das genauso zur Story wie eine Bestätigung.
+* **Reproduzierbarkeit**: Die gesamte Datenpipeline (Download, ETL, Visualisierung) muss von einer dritten Person nachvollziehbar und ausführbar sein, ausschliesslich mit öffentlichen Daten und Open-Source-Tools.
 
 * **Out of Scope**:
-  * Real-time live transcription analysis
-  * Audio processing of speeches
-  * Predictive modeling (e.g., predicting how a politician will vote)
+  * Kantonale Parlamentsmitglieder. Der Fokus liegt ausschliesslich auf der Bundesebene (`body_key == "CHE"`).
+  * Mitglieder des Bundesrats (Exekutive). Die Analyse beschränkt sich auf die Legislative, also Nationalrat und Ständerat. Das Alter des Bundesrats wurde andernorts ausführlich diskutiert [@tagesanzeiger_regierung].
+  * Inhaltliche Analyse von Abstimmungs-, Sprech- oder Geschäftsdaten. Diese standen in einer früheren Projektphase im Fokus, wurden aber zugunsten der fokussierten Altersfrage ausgeklammert.
+  * Vorhersagen zu individuellem Wahl- oder Abstimmungsverhalten.
+  * Manuelles Sammeln zusätzlicher Daten ausserhalb von OpenParlData.
 
-## Success Criteria
+## Erfolgskriterien
 
-* **Qualitative**:
-  * Users can successfully and quickly identify thematic clusters
-  * Different clusters can be clearly identified
-* **Quantitative**:
-  * Process at least 10'000 transcripts
+* **Qualitativ**:
+  * Lesende erfassen die Kernantwort auf die Hypothese innerhalb von zwei Minuten.
+  * Jede Visualisierung beantwortet genau eine Teilfrage und ist ohne erklärenden Begleittext interpretierbar.
+  * Die vier Seiten des Dashboards bilden einen erkennbaren narrativen Bogen (Headline, Aufschlüsselung, Mechanismus, Personen).
+* **Quantitativ**:
+  * Mindestens 3'500 Bundespolitiker:innen mit validem Geburtsdatum werden ausgewertet.
+  * Die historische Abdeckung erstreckt sich auf den Zeitraum von 1850 bis 2025 (mindestens 175 Jahre).
+  * Die vollständige Pipeline läuft auf einem Standard-Notebook.
 
-## Stakeholder Analysis
+## Stakeholder-Analyse
 
-* **Development Team**: Responsible for data engineering, AI processing, and visualization design.
-* **Course Instructors**: Evaluate the project based on reproducibility, technical implementation, and storytelling quality.
-* **Political Journalists**: Professional end-users looking for data-driven insights and quantitative proof of political polarization.
-* **Voters / Engaged Citizens**: General end-users seeking a transparent, big-picture overview of Swiss political dynamics.
+* **Entwicklungsteam**: Verantwortlich für Datenbeschaffung, ETL, Visualisierungsdesign und Deployment. Trägt das technische Risiko und die inhaltliche Verantwortung.
+* **Dozierende**: Bewerten das Projekt nach Reproduzierbarkeit, technischer Umsetzung, Visualisierungsqualität und narrativer Klarheit. Geben Feedback in den Coaching-Sessions.
+* **Datenjournalist:innen**: Externe Zielgruppe, die das fertige Produkt für eigene Beiträge zitieren oder als Recherche-Werkzeug verwenden kann. Schätzen exakte Zahlen, transparente Methodik und klare Quellenangaben.
+* **Politisch interessierte Bürger:innen**: Hauptzielgruppe des Visualisierungsprodukts. Möchten in wenigen Minuten eine fundierte Antwort auf eine gesellschaftliche Wahrnehmung erhalten, ohne sich durch Fachliteratur kämpfen zu müssen.
 
-## User Analysis
+## User-Analyse
 
-We have identified two primary personas based on the Value Proposition Canvas [@Osterwalder2014]:
+Wir haben zwei primäre Personas identifiziert, formuliert nach dem Value Proposition Canvas von Osterwalder et al. [@Osterwalder2014].
 
-### The Political Journalist - Sarah (31)
-
-* **Quick Facts**
-  * *Domain expertise*: High
-  * *Data literacy*: Moderate
-  * *Usage*: Weekly
-  * *Device*: Desktop / Laptop
-* **User tasks**
-  * Writing data-driven articles on political polarization.
-  * Finding specific quotes or identifying which politicians are driving a specific narrative.
-* **Pains**
-  * Reading through thousands of pages of the *Amtliches Bulletin* (official transcripts) is incredibly time-consuming.
-  * It is difficult to prove "polarization" quantitatively rather than just anecdotally.
-* **Gains** 
-  * A tool that instantly highlights outliers (e.g. a politician speaking more like an opposing party) to formulate compelling journalistic narratives.
-
-### The Engaged Citizen - Marco (57)
+### Die Datenjournalistin: Sarah, 31
 
 * **Quick Facts**
-  * *Domain expertise*: Moderate
-  * *Data literacy*: Low
-  * *Usage*: Regular (around elections)
-  * *Device*: Mobile (tablet)
+  * *Fachexpertise*: Hoch (politische Berichterstattung)
+  * *Datenkompetenz*: Mittel
+  * *Nutzung*: Punktuell, bei Recherchen
+  * *Gerät*: Desktop oder Laptop
 * **User Tasks**
-  * Deciding who to vote for.
-  * Trying to understand if a party actually aligns with their personal values.
+  * Recherche für einen Datenartikel über Generationenwechsel im Parlament.
+  * Schnelle Verifikation oder Falsifikation populärer Behauptungen wie "das Parlament wird immer älter".
+  * Identifikation konkreter Personen (jüngste, älteste, am längsten amtierende Parlamentarier:innen) für anekdotische Aufhänger im Artikel.
 * **Pains**
-  * Political rhetoric is dense, dry and hard to follow.
-  * It is difficult to see the "big picture" of what a party actually focuses on.
+  * Primärquellen wie das Amtliche Bulletin oder die parlament.ch Biografien erfordern stundenlange manuelle Recherche.
+  * Aggregierte Statistiken zur Alterstruktur sind in offiziellen Quellen nur lückenhaft verfügbar.
+  * Aussagen wie "die Politiker werden immer älter" lassen sich anekdotisch leicht behaupten, aber quantitativ schwer belegen oder widerlegen.
 * **Gains**
-  * A simple, visually appealing way to see which politicians and parties are ideologically similar at a single glance.
+  * Ein Werkzeug, das in Sekunden eine belastbare Antwort liefert und deren methodische Grundlage transparent macht.
+  * Konkrete, zitierfähige Zahlen mit Stichtagsangabe und Quellverweis.
+  * Möglichkeit, eigene Hypothesen schnell gegen die Daten zu testen.
 
-## Situation Assessment
+### Der engagierte Bürger: Marco, 23
 
-### Resources
+* **Quick Facts**
+  * *Fachexpertise*: Mittel (politisch interessiert, kein Insider)
+  * *Datenkompetenz*: Gering
+  * *Nutzung*: Sporadisch, oft im Vorfeld von Wahlen oder nach polarisierenden Medienberichten
+  * *Gerät*: Tablet oder Smartphone
+* **User Tasks**
+  * Eine in den Medien gehörte These über das Schweizer Parlament selber prüfen.
+  * Sich ein Bild davon machen, wie das aktuelle Parlament demografisch zusammengesetzt ist.
+  * Vergleiche zwischen den Parteien anstellen, ohne sich tief in politische Programme einzulesen.
+* **Pains**
+  * Politische Statistiken sind häufig in Fachjargon verpackt oder hinter Paywalls versteckt.
+  * Datenvisualisierungen sind oft mit zu vielen Variablen überladen und schwer auf einem Tablet lesbar.
+  * Mangel an historischer Perspektive: Aktuelle Schlagzeilen lassen sich schwer einordnen, wenn der historische Vergleich fehlt.
+* **Gains**
+  * Ein klarer, visueller Befund auf einer einzelnen Seite, der die Hauptfrage beantwortet.
+  * Optionale Detailebenen, die er auf Wunsch erkunden kann, ohne dass sie ihn auf der Startseite überladen.
+  * Eine ehrliche Darstellung, die auch widersprüchliche oder unerwartete Ergebnisse zeigt, statt eine bestimmte politische Agenda zu bedienen.
 
-* **Personnel**
-  * 2 Data Science students
+## Situations-Analyse
+
+### Ressourcen
+
+* **Personal**
+  * 2 Studierende
   * 2 Coaches
 * **Software**
-  * ZHAW licensed software
-  * Open source / public domain software
-* **Time**
-  * 12 weeks
+  * Open-Source-Stack: Python, uv, pandas, pyarrow, Plotly, Streamlit, Quarto
+  * GitHub für Versionskontrolle und Deployment (GitHub Actions, GitHub Pages)
+  * Docker für die containerisierte Bereitstellung der Streamlit-App
+* **Zeit**
+  * 12 Wochen Semesterprojekt, Endabgabe am 1. Juni 2026
 
 ### Constraints
 
-* Publicly available data only via [OpenParlData](https://openparldata.ch/home)
-* Swiss hosting service for dashboard
+* Ausschliesslich öffentlich verfügbare Daten via [OpenParlData.ch](https://openparldata.ch/home).
+* Das Produkt muss online und ohne Login frei zugänglich sein.
+* Verwendung der im Kurs vorgestellten Frameworks (Python, Quarto, Streamlit) sofern nicht eine substanzielle Begründung für eine Abweichung vorliegt.
 
-### Risks
+### Risiken
 
-* High computational cost of generating AI embeddings locally
-* Multilingual nuances (German, French, Italian) potentially skewing the semantic clustering
+* **Datenqualität historischer Geburtstage**: Für rund 7% der erfassten Bundespolitiker:innen fehlt das Geburtsdatum. Bei sehr alten Datensätzen (vor 1900) ist die Lücke etwas grösser. Mitigation: Filterung auf valide Geburtsdaten, transparente Dokumentation der ausgeschlossenen Fälle.
+* **Veränderung von Parteinamen über die Zeit**: CVP wurde zu Die Mitte, FDP zu FDP-Liberale, etc. Mitigation: Verwendung der von OpenParlData bereitgestellten harmonisierten Parteibezeichnungen.
+* **Aktive Mandate ohne Enddatum**: Für noch laufende Mandate ist das Enddatum offen. Mitigation: Bei Tenure-Berechnungen wird das heutige Datum als provisorisches Mandatsende verwendet, und betroffene Datensätze sind über das Flag `currently_active` erkennbar.
 
-## Visualization Concept
+## Visualisierungskonzept
 
-* **Product form**: An interactive web-based dashboard
-* **Visual encodings**:
-  * *Main Graphic*: A 2D Scatter plot. Each dot represents a single speech (mapped via UMAP X/Y coordinates). Color hue encodes the **Party** (Categorical).
-  * *Supporting Graphics*: Bar charts encoding average speech duration or average sentiment score by Party (Length/Height encoding).
-* **Interactivity**: 
-  * Dropdown menus to filter the scatter plot by Party, Language or Canton.
-  * Hover tooltips on the dots to reveal the Speaker's Name, Date, and a short snippet of the speech.
-* **Narrative and annotation**: A brief introductory text panel explaining how the AI reads the speeches and creates the "semantic map," guiding the user on how to interpret the spatial distances between dots.
-* **Target medium and integration**: Hosted online as a standalone web application, accessible via a standard web browser.
+* **Produktform**: Interaktives Webdashboard, umgesetzt mit Streamlit und Plotly. Vier inhaltliche Seiten, die einen aufeinander aufbauenden narrativen Bogen bilden.
+* **Visuelle Encodings**:
+  * *Hauptdiagramm (Seite 1, Headline)*: Liniendiagramm. X-Achse = Jahr (1850 bis 2025), Y-Achse = Median-Alter pro Kammer. Zwei Linien (NR, SR) mit hellem 25-bis-75-Prozent-Perzentilband als Streuungsindikator. Farbcodierung: Nationalrat in Dunkelblau, Ständerat in Orange (konsistent über das ganze Produkt).
+  * *Aufschlüsselung (Seite 2)*: Liniendiagramm pro Partei und pro Geschlecht. Begrenzung auf die sechs grössten Parteien zur Reduktion von Visual Clutter.
+  * *Mechanismus (Seite 3)*: Boxplot des Eintrittsalters pro Eintrittsjahrzent, Histogramm der Gesamt-Mandatsdauer, Balkendiagramm der medianen Mandatsdauer.
+  * *Personen (Seite 4)*: Drei Top-10-Tabellen (jüngste, älteste und am längsten amtierende Parlamentarier:innen) plus ein Histogramm der Altersverteilung im aktuellen Parlament.
+* **Interaktivität**:
+  * Mehrseitige Navigation via Sidebar.
+  * Plotly-Tooltips mit exakten Werten beim Überfahren der Datenpunkte.
+  * Hover-Highlights zur einfachen Identifikation spezifischer Jahre, Parteien oder Personen.
+* **Narrative und Annotation**: Auf jeder Seite gibt es einen kurzen einleitenden Text mit der Teilfrage, ein bis zwei Visualisierungen und einen Schluss-Absatz mit der Hauptbeobachtung in Klartext. Die Headline-Seite enthält zudem KPI-Karten mit den wichtigsten Zahlen.
+* **Zielmedium und Integration**: Standalone-Webanwendung, hinter einem Reverse-Proxy unter `vdss.cboss.dev/streamlit` erreichbar. Begleitend dazu eine Quarto-Dokumentation auf GitHub Pages.
 
-**Intended Value Dimensions**:
-
-* **Cognitive and analytical value**: The scatter plot clustering instantly reveals hidden patterns of ideological similarity that are impossible to detect by reading raw text.
-* **Communicative value**: Color-coding by party communicates whether parties act as a unified bloc or if their members' rhetoric is scattered.
-* **Experiential and aesthetic value**: Turning dry government transcripts into an interactive, explorable "map" of ideas provides a modern and engaging experience.
-
-## Project Plan
-Below is the preliminary timetable for the visualization project:
+## Projektplan
 
 ```{mermaid}
 %%| label: fig-project-plan
-%%| fig-cap: Preliminary project plan.
+%%| fig-cap: Tatsächlicher Projektverlauf inklusive Pivot.
 gantt
-    title Project Plan
+    title Projektplan VDSS
     dateFormat YYYY-MM-DD
     tickInterval 1week
-    
-    section Project Understanding
-        Context, Stakeholder & User analysis :a1, 2026-03-16, 3d
-        Draft Project Charta :milestone, m1, 2026-03-20, 0d
-        First Coaching Session :a2, 2026-03-23, 5d
-    
-    section Data Acquisition & Processing
-        API Data Fetching (swissparlpy) :a3, 2026-04-01, 5d
-        AI Embeddings & UMAP reduction :a4, 2026-04-06, 7d
-        Exploratory Data Analysis (EDA) :a5, 2026-04-13, 5d
-        Complete Data Report :a6, 2026-04-18, 3d
-        
-    section Visual Encoding and Design
-        Draft Visualization Concept :a7, 2026-04-21, 7d
-        Implement Dashboard Prototype :a8, 2026-04-28, 14d
-        Refine UI/UX & Interactivity :a9, 2026-05-12, 5d
-        
-    section Evaluation & Deployment
-        User Testing / Peer Review :a10, 2026-05-17, 5d
-        Finalize Quarto Documentation :a11, 2026-05-22, 7d
-        Final Project Submission :milestone, m2, 2026-06-01, 0d
-        Prepare Presentation Slides :a12, 2026-06-02, 7d
+
+    section Projekt-Verstaendnis
+        Kontext-, Stakeholder- und User-Analyse :a1, 2026-03-16, 5d
+        Erste Charta (Voting-Analyse)           :milestone, m1, 2026-03-23, 0d
+
+    section Datenbeschaffung und ETL
+        Download und NDJSON-Parsing             :a3, 2026-04-01, 5d
+        Erste ETL (Votes, Affairs, Speeches)    :a4, 2026-04-06, 7d
+        Explorative Datenanalyse                :a5, 2026-04-13, 5d
+
+    section Erste Iteration
+        Streamlit-Prototyp Voting-Analyse       :a6, 2026-04-21, 10d
+        Entscheid Pivot zur Altersanalyse       :milestone, m2, 2026-05-02, 0d
+
+    section Zweite Iteration
+        Neue ETL fuer Altersanalyse             :a8, 2026-05-05, 3d
+        Charta und Datenbericht ueberarbeiten   :a9, 2026-05-07, 4d
+        Visualisierungsprodukt finalisieren     :a10, 2026-05-07, 7d
+
+    section Evaluation und Abgabe
+        Finalisierung Quarto-Dokumentation      :a12, 2026-05-15, 4d
+        Abgabe                                  :milestone, m3, 2026-06-01, 0d
 ```
 
-## Roles and Contact Details
+## Rollen und Kontakt
 
-| Person                    | Role                             | Task                                                         | Email                               |
+| Person                    | Rolle                            | Aufgabe                                                      | E-Mail                              |
 | ------------------------- | -------------------------------- | ------------------------------------------------------------ | ----------------------------------- |
-| Christian Bosshard        | Data Scientist                   | Developer                                                    | boschr02@students.zhaw.ch           |
-| Enea D. Fedel             | Data Scientist / Teamsprecher    | Developer                                                    | fedelene@students.zhaw.ch           |
-| Manuel Dömer              | Coach                            | Consulting for technical topics                              | doem@zhaw.ch                        |
-| Wibke Weber               | Coach                            | Consulting for (visual) communication topics                 | webw@zhaw.ch                        |
+| Christian Bosshard        | Data Scientist                   | Entwicklung, ETL, Visualisierung                             | boschr02@students.zhaw.ch           |
+| Enea D. Fedel             | Data Scientist, Teamsprecher     | Entwicklung, Visualisierung, Dokumentation                   | fedelene@students.zhaw.ch           |
+| Manuel Dömer              | Coach                            | Beratung zu technischen Themen                               | doem@zhaw.ch                        |
+| Wibke Weber               | Coach                            | Beratung zu visueller Kommunikation                          | webw@zhaw.ch                        |
+
+## Quellen
+
+::: {#refs}
+:::

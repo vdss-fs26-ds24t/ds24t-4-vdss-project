@@ -1,62 +1,101 @@
-# Evaluation Report
-This report documents the systematic evaluation of the visualization prototype developed in the [Visual Encoding and Design](viz_design_report.qmd) phase against the project objectives and success criteria defined in the [Project Charta](project_charta.qmd).
+---
+title: "Evaluation"
+---
 
-## Evaluation Setup
+# Evaluation
 
-### Evaluation Objectives
-State what the evaluation aims to assess. Reference the success criteria from the Project Charta and map them to the three value dimensions:
+Dieser Bericht prüft den im [Visualisierungsdesign](viz_design_report.qmd) entwickelten Prototypen gegen die Ziele und Erfolgskriterien aus der [Projekt Charta](project_charta.qmd).
 
-* **Cognitive and analytical value**: Can users effectively accomplish the intended analytical tasks (detect patterns, compare values, identify outliers, etc.)?
-* **Communicative value**: Does the visualization successfully convey its message to the target audiences with varying levels of data literacy?
-* **Experiential and aesthetic value**: Do users perceive the product as engaging, trustworthy and usable?
+## Evaluations-Setup
 
-### Evaluation Method
-Describe the evaluation method(s) used. Common approaches for visualization products include:
+### Ziele
 
-* **Heuristic evaluation**: Expert review based on established visualization design principles (e.g. Munzner's design guidelines, Tufte's principles, Nielsen's usability heuristics adapted for visualization).
-* **User testing**: Task-based usability tests with representative users from the target segments identified in the user analysis. Document the tasks, think-aloud protocol, observation setup, etc.
-* **Questionnaire-based evaluation**: Standardised instruments such as the System Usability Scale (SUS), NASA-TLX for task load, or custom questionnaires aligned with the success criteria.
-* **Insight-based evaluation**: Analysis of the quantity, quality and depth of insights users derive from the visualization within a given time frame.
-* **Comparative evaluation**: Side-by-side comparison with the current approach (baseline) or alternative designs.
+Die Evaluation beantwortet, ob die vier in der Charta definierten Erfolgskriterien erreicht sind. Wir ordnen sie den drei Wertdimensionen nach van Wijk [@vanwijk2005] zu:
 
-### Participants
-If user testing or questionnaire-based evaluation was conducted, describe the participants:
+* **Kognitiv und analytisch**: Falsifizierbarkeit der Hypothese, klarer roter Faden.
+* **Kommunikativ**: Allgemeinverständlichkeit für eine nicht-fachliche Zielgruppe.
+* **Erlebnis und Vertrauen**: Reproduzierbarkeit der Pipeline, transparente Methodik.
 
-* Number of participants per user segment
-* Relevant characteristics (domain expertise, data literacy, familiarity with similar tools)
-* Recruitment method
+### Methode
 
-## Results
-Summarise the evaluation results structured by success criteria. For each criterion, report:
+Die Evaluation basiert auf drei Bausteinen:
 
-* The observed outcome (qualitative observations, quantitative metrics)
-* Whether the target value was met
-* Notable findings, unexpected observations or edge cases
+1. **Heuristische Selbstprüfung** des Teams entlang etablierter Designprinzipien (Marks-and-Channels-Hierarchie, *overview first, details on demand*) sowie der Charta-Kriterien [@card1999; @shneiderman1996].
+2. **Vergleichsbenchmark gegen bestehende Berichterstattung**: Wir vergleichen unsere Befunde mit publizierten Auswertungen zur gleichen Frage (siehe Abschnitt @sec-benchmark).
+3. **Coaching-Feedback** aus den Sessions mit Manuel Dömer (technisch) und Wibke Weber (visuelle Kommunikation).
 
-Use tables, charts or annotated screenshots where they support clarity.
+### Beteiligte
 
-## Discussion
-Interpret the results in the context of the project objectives and user needs:
+* Christian Bosshard und Enea D. Fedel (Entwicklungsteam, Selbstbewertung).
+* Manuel Dömer und Wibke Weber (ZHAW-Coaches, Feedback in begleitenden Sessions).
 
-* Which aspects of the visualization concept worked well? Which user pains were effectively relieved, which gains were created?
-* Where did the design fall short of expectations? What are possible explanations?
-* Are there trade-offs between the three value dimensions (e.g. analytical depth vs. accessibility for non-expert users)?
-* What are the limitations of the evaluation itself (e.g. small sample size, lab vs. field conditions, prototype fidelity constraints)?
+## Ergebnisse
 
-## Checkpoint Decision
-Document the decision taken by the project team and stakeholders based on the evaluation results:
+### Bewertung pro Erfolgskriterium
 
-* **Proceed to deployment**: The prototype meets the success criteria and is ready for deployment (with or without minor adjustments).
-* **Iterate**: An additional design iteration is needed. Specify which aspects require reworking:
-    * Revised or additional data acquisition
-    * Changes to visual encoding or interaction design
-    * Adjustments to layout, narrative or visual style
-    * Addressing accessibility, performance or governance issues
-* **Discontinue**: The project objectives cannot be met with the current approach. Document the rationale.
+| Erfolgskriterium | Wertdimension | Status | Belege |
+|---|---|---|---|
+| Falsifizierbarkeit der Hypothese | kognitiv | Erfüllt | Hypothese „Politiker werden immer älter" mit Daten klar widerlegt; NR-Median 2020er liegt unter dem Niveau der 1950er. |
+| Klarer roter Faden | kognitiv | Erfüllt | Vier Seiten, vier Teilfragen, lineare Navigation Headline–Aufschlüsselung–Mechanismus–Personen. |
+| Allgemeinverständlichkeit | kommunikativ | Voraussichtlich erfüllt | Konzepte Alter, Eintrittsalter, Mandatsdauer kommen ohne Fachjargon aus. Bestätigung steht aus (keine Nutzer:innen-Tests). |
+| Reproduzierbarkeit | Erlebnis und Vertrauen | Erfüllt | Vollständige Pipeline in Python (`uv`, `pandas`, `pyarrow`); Quellcode auf GitHub; Deployment via GitHub Actions; alle Schritte in `eda/` und `deployment/` versioniert. |
 
-Record who participated in the decision and when it was taken.
+### Einordnung in bestehende Berichterstattung {#sec-benchmark}
 
-## Additional Requirements and Deployment Planning
-If the decision is to proceed to deployment, document any additional requirements that emerged from the evaluation (e.g. features requested by users, data refresh needs, access control) and outline the plan for the [Deployment](deployment.qmd) phase.
+Im Oktober 2019 berichtete Keystone-SDA für SWI swissinfo.ch [@swissinfo2019_nationalrat] auf Basis von BFS-Daten, der neu gewählte Nationalrat sei mit einem Durchschnittsalter von 49.0 Jahren so jung wie nie zuvor (gegenüber 50.3 Jahren vier Jahre zuvor). Unsere Auswertung kommt qualitativ zum gleichen Schluss, mit drei methodischen Unterschieden, die einen direkten Zahlenvergleich erschweren:
 
-Any presentation material created for evaluation workshops should be stored in the `docs` folder.
+* **Datengrundlage:** BFS-Statistiken zur 51. Legislaturperiode (Swissinfo) gegenüber OpenParlData-Export der parlament.ch Biografien (wir).
+* **Stichtag:** Swissinfo misst unmittelbar nach den Wahlen vom 20. Oktober 2019. Unser Snapshot misst am 1. Juli. Für 2019 zeigt unser Mittelwert deshalb 53.1 Jahre (alter Bestand), für 2020 dagegen 50.1 Jahre (erster Juli mit dem neu gewählten Rat). Die Befunde stimmen überein, sobald der Stichtag berücksichtigt ist.
+* **Statistik:** Swissinfo verwendet den arithmetischen Mittelwert, wir den robusteren Median.
+
+Unsere Analyse erweitert die Berichterstattung in zwei Dimensionen. Der historische Vergleich reicht bis 1850 zurück und zeigt, dass der heutige Tiefstand nur im Kontext der letzten 100 Jahre tief ist; gegenüber dem 19. Jahrhundert ist die Bundesversammlung deutlich älter geworden. Zweitens decken wir mit dem Ständerat eine Kammer ab, die in der Wahlberichterstattung typischerweise weniger Beachtung findet.
+
+### Kernbefunde
+
+1. Die Alltagsthese "Politiker werden immer älter" ist falsch (zumindest für den Nationalrat). Median-Alter 2020er bei 51.6 Jahren, so tief wie seit 100 Jahren nicht mehr.
+2. Die Alterung passierte hauptsächlich im 19. Jahrhundert: Median NR von 44 (1850) auf 55 (1900).
+3. Der Ständerat ist konstant älter als der Nationalrat; aktueller Abstand rund 8 Jahre.
+4. Eintrittsalter ist seit 1880 stabil bei 46 bis 49 Jahren.
+5. Mediane Mandatsdauer beträgt rund 9 Jahre; Karrieren über 30 Jahre sind sehr seltene Ausnahmen.
+
+## Diskussion
+
+**Was funktioniert hat.** Die Eingrenzung auf eine einzige falsifizierbare Hypothese mit einem universell verständlichen Konzept (Alter) ist die wichtigste Designentscheidung des Projekts. Das Headline-Diagramm beantwortet die Frage unmittelbar. Der kontraintuitive Befund ("stimmt nicht") trägt den narrativen Bogen wesentlich besser als eine reine Bestätigung der Alltagsthese das könnte.
+
+**Wo das Design Grenzen hat.** Die kommunikative Wirkung auf Persona Marco (mobiler Nutzer, geringe Datenkompetenz) ist nicht empirisch belegt. Auch wenn die Streamlit-Defaults responsive sind, bleibt die Sidebar-Navigation auf einem Smartphone gedrungen, und die Plotly-Tooltips sind auf Touch-Geräten weniger zugänglich als mit Maus.
+
+**Trade-offs zwischen den Wertdimensionen.** Wir haben bewusst auf eine globale Filterleiste verzichtet, um die Aussagekraft der dokumentierten Stichtags-Zahlen nicht durch beliebige User-Filter zu verwässern. Das stärkt die kommunikative Wertdimension auf Kosten der experimentellen Erkundbarkeit. Für Persona Sarah (Datenjournalistin) ist das vertretbar, weil sie zitierbare Zahlen sucht aber für eine Power-User-Erweiterung wäre eine optionale Filterleiste denkbar.
+
+**Limitierungen der Evaluation selbst.**
+
+* Heuristische Bewertung ist anfällig für Bestätigungsbias des Designteams.
+* Der Vergleich mit Swissinfo prüft den analytischen Befund, nicht das User-Erleben.
+
+**Bekannte Datenlimitierungen** (siehe auch [Datenbericht](data_report.qmd)):
+
+* Rund 7% der Bundespolitiker:innen haben kein erfasstes Geburtsdatum, betrifft v. a. historische Datensätze.
+* `total_tenure_years` kann minimal negative Werte annehmen, wenn Begin- und Enddatum am selben Tag liegen; Effekt auf die Verteilung ist vernachlässigbar.
+* `age_today` berücksichtigt das `deathday`-Feld nicht und überschätzt das Alter längst verstorbener Personen. In den Visualisierungen wird dies durch Filterung auf `currently_active` umgangen.
+
+## Checkpoint-Entscheidung
+
+**Entscheidung: Proceed to Deployment, mit kleineren Nacharbeiten.**
+
+Der Prototyp erfüllt drei der vier Erfolgskriterien zweifelsfrei. Die Allgemeinverständlichkeit gilt als plausibel, aber nicht empirisch belegt. Die offenen Punkte (siehe nächster Abschnitt) sind nicht blockierend für die Abgabe.
+
+**Entscheidungstragende:** Christian Bosshard, Enea D. Fedel, mit Rückendeckung der Coaches Manuel Dömer und Wibke Weber.
+**Datum der Entscheidung:** Ende Mai 2026
+
+## Zusätzliche Anforderungen und Deployment-Planung
+
+Folgende Punkte werden in die [Deployment](deployment.qmd)-Phase mitgenommen oder bewusst zurückgestellt:
+
+* **ETL-Korrektur:** Negative `total_tenure_years` clampen auf 0, `age_today` auf `min(today, deathday)` setzen. Aufwand gering, kann vor der Abgabe noch erfolgen.
+* **Mobile Iteration:** Smartphone-Walkthrough manuell prüfen, Sidebar gegebenenfalls per `st.sidebar.collapsed=True` als Default für mobile Viewports konfigurieren. Zurückgestellt auf nach der Abgabe.
+* **Screenshots in der Dokumentation:** Für die Präsentationsfolien werden statische Screenshots der vier Seiten benötigt. Ablage unter `docs/pics/`.
+* **Nutzer:innen-Test als Folgeprojekt:** Eine task-basierte Evaluation mit drei bis fünf Vertretungen pro Persona wäre der natürliche nächste Schritt, würde aber den Semesterrahmen sprengen.
+
+## Quellen
+
+::: {#refs}
+:::

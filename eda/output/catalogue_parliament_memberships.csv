@@ -1,0 +1,17 @@
+index,column,dtype,n_missing,pct_missing,n_unique,min,median,max,mean,top_values
+1,person_id,float64,0,0.0,3546,119.0,20474.0,25190.0,20147.166,
+2,firstname,object,0,0.0,1307,,,,,Hans (131); Paul (83); Walter (74)
+3,lastname,object,0,0.0,2256,,,,,Müller (61); Schmid (33); Weber (26)
+4,birthday,datetime64[ms],0,0.0,3437,,,,,1952-10-31 00:00:00 (10); 1952-08-26 00:00:00 (9); 1942-05-07 00:00:00 (8)
+5,gender,object,0,0.0,2,,,,,m (4761); f (638)
+6,party_de,object,24,0.44,77,,,,,FDP-Liberale (1640); CVP (944); SP (821)
+7,party_harmonized_de,object,545,10.09,21,,,,,FDP.Die Liberalen (1641); Christlichdemokratische Volkspartei der  (944); Sozialdemokratische Partei (823)
+8,electoral_district_de,object,1,0.02,74,,,,,Bern (672); Zürich (665); Waadt (421)
+9,chamber,object,0,0.0,2,,,,,Nationalrat (4214); Ständerat (1185)
+10,begin_date,datetime64[ms],0,0.0,757,,,,,2003-12-01 00:00:00 (240); 2023-12-04 00:00:00 (234); 2015-11-30 00:00:00 (228)
+11,end_date,datetime64[ms],237,4.39,1279,,,,,2003-11-30 00:00:00 (242); 2019-12-01 00:00:00 (235); 2007-12-02 00:00:00 (231)
+12,end_date_eff,datetime64[ms],0,0.0,1280,,,,,2003-11-30 00:00:00 (242); 2026-05-17 00:00:00 (237); 2019-12-01 00:00:00 (235)
+13,entry_age,float64,0,0.0,2776,21.28,48.74,81.41,48.481,
+14,exit_age,float64,0,0.0,2892,25.28,56.29,85.77,55.507,
+15,duration_years,float64,0,0.0,1140,-0.04,4.0,48.48,7.025,
+16,is_active,bool,0,0.0,2,,,,,False (5162); True (237)

@@ -5,15 +5,17 @@ description = "DS Project for the VDSS course"
 readme = "README.md"
 requires-python = "==3.12.*"
 dependencies = [
-    "duckdb>=1.5.0",
     "ipython>=8.37.0",
+    "jupyter>=1.1.1",
     "jupyterlab>=4.4.7",
     "matplotlib>=3.10.6",
     "pandas>=2.3.2",
+    "plotly>=6.7.0",
+    "pyarrow>=24.0.0",
     "python-dotenv>=1.1.1",
+    "ruff>=0.15.13",
     "seaborn>=0.13.2",
-    "swissparlpy>=1.0.0",
-    "ydata-profiling>=4.12.2",
+    "streamlit>=1.57.0",
 ]
 
 authors = [

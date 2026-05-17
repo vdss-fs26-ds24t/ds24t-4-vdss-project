@@ -18,7 +18,7 @@ website:
       - data_report.qmd
       - viz_design_report.qmd
       - evaluation.qmd
-      - meeting_notes.qmd
+      - deployment.qmd
       - text: "Streamlit"
         href: /streamlit/
 
@@ -32,7 +32,7 @@ format:
 number-sections: true
 
 bibliography: refs.bib
-csl: vancouver-brackets.csl
+csl: ieee.csl
 
 jupyter: python3
 

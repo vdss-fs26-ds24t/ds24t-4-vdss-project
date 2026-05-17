@@ -1,1 +1,40 @@
-# Deployment
+---
+title: "Deployment"
+---
+
+# Technisches Deployment
+
+## 1. Lokale Ausführung
+
+Die gesamte Pipeline lässt sich in vier Schritten lokal reproduzieren:
+
+1. **Python-Umgebung aufsetzen.** Wir nutzen `uv` für reproduzierbares Dependency-Management.
+   ```bash
+   uv sync
+   ```
+2. **Datenbeschaffung (NDJSON → Parquet).** Konvertiert die OpenParlData-Rohdaten effizient ins Spaltenformat.
+   ```bash
+   uv run python eda/1_gather_data.py
+   ```
+3. **ETL für die Altersanalyse.** Filtert auf Bundesebene, joinst Personen × Parlamentsmitgliedschaften und erzeugt drei kompakte Parquets.
+   ```bash
+   uv run python eda/2_etl_politicians.py
+   ```
+4. **Interaktive Datenstory starten.**
+   ```bash
+   uv run streamlit run deployment/app.py
+   ```
+
+## 2. Quarto-Dokumentation
+
+Die Begleitdokumentation (Charta, Datenbericht, Designbericht) wird statisch über Quarto generiert:
+
+```bash
+uv run quarto render docs
+```
+
+Die gerenderte Version wird über GitHub Actions automatisch auf GitHub Pages publiziert ([vdss.cboss.dev](https://vdss.cboss.dev)).
+
+## 3. Streamlit-App
+
+Die interaktive Datenstory läuft als Container hinter einem Reverse-Proxy unter dem Pfad `/streamlit`. Der `Dockerfile` in `deployment/` baut das Image auf Basis von `python:3.11-slim`. Beim Start wird `app.py` direkt mit `streamlit run` ausgeführt; die Parquets unter `data/processed/` werden zur Build-Zeit eingebunden, so dass die App ohne externe DB lauffähig ist.

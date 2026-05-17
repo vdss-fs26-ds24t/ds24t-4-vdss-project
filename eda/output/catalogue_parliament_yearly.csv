@@ -1,0 +1,10 @@
+index,column,dtype,n_missing,pct_missing,n_unique,min,median,max,mean,top_values
+1,person_id,float64,0,0.0,3478,119.0,20290.0,22197.0,20072.088,
+2,firstname,object,0,0.0,1274,,,,,Hans (1080); Paul (772); Josef (660)
+3,lastname,object,0,0.0,2224,,,,,Müller (484); Weber (300); Schmid (297)
+4,chamber,object,0,0.0,2,,,,,Nationalrat (30115); Ständerat (7600)
+5,gender,object,0,0.0,2,,,,,m (35188); f (2527)
+6,party_de,object,173,0.46,76,,,,,FDP-Liberale (12270); CVP (8391); SP (5611)
+7,party_harmonized_de,object,3687,9.78,21,,,,,FDP.Die Liberalen (12270); Christlichdemokratische Volkspartei der  (8391); Sozialdemokratische Partei (5623)
+8,age,float64,0,0.0,4559,21.86,53.69,85.36,53.324,
+9,year,int64,0,0.0,176,1850.0,1946.0,2025.0,1944.158,
