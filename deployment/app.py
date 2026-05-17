@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 import pandas as pd
@@ -5,7 +6,9 @@ import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
 
-DATA_DIR = Path(__file__).parent.parent / "data" / "processed"
+# In Docker the build copies data/processed/ to /app/data/processed/ and sets VDSS_DATA_DIR
+# for local development the relative path resolves correctly.
+DATA_DIR = Path(os.environ.get("VDSS_DATA_DIR", Path(__file__).parent.parent / "data" / "processed"))
 
 CHAMBER_COLORS = {"Nationalrat": "#1f4e79", "Ständerat": "#e07b3a"}
 PARTY_COLORS = {

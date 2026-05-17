@@ -1,7 +1,15 @@
 FROM python:3.11-slim
 WORKDIR /app
-COPY . .
-RUN pip install -r requirements.txt
+
+# Build context is the project root (see .github/workflows/deploy.yml).
+COPY deployment/requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY deployment/app.py .
+COPY data/processed/ ./data/processed/
+
+ENV VDSS_DATA_DIR=/app/data/processed
+
 EXPOSE 8501
 
 # The baseUrlPath flag is CRITICAL for reverse proxying to a subpath!
