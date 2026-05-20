@@ -20,7 +20,7 @@ website:
       - evaluation.qmd
       - deployment.qmd
       - text: "Streamlit"
-        href: /streamlit/
+        href: https://vdss.cboss.dev/streamlit/
 
 format:
   html:
